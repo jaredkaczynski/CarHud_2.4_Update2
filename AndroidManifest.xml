@@ -19,11 +19,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppBaseTheme"
+        android:theme="@style/Theme.AppCompat"
         android:launchMode="singleTask"
         android:name="com.carhud.app.CarHudApplication">
         <meta-data android:name="com.google.android.gms.version"
-           android:value="21" />
+           android:value="@integer/google_play_services_version" />
         <activity
             android:configChanges="orientation|screenSize"
             android:name="com.carhud.app.Hud"
@@ -37,7 +37,7 @@
         <activity android:label="Preferences"
             android:configChanges="orientation|screenSize"
             android:name="com.carhud.app.usersetting.UserSetting"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.AppCompat" />
         <service android:name="com.carhud.app.service.CarHudSenderService"/>        
         <service android:name="com.carhud.app.service.CarHudNotificationListenerService"
                  android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

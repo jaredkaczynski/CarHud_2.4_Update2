@@ -305,13 +305,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 			    TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
@@ -481,13 +481,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
@@ -504,13 +504,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
@@ -526,13 +526,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.bt_not_available));
@@ -634,13 +634,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
@@ -657,13 +657,13 @@ public class Hud extends ActionBarActivity
 				setContentView(R.layout.hud);
 
 				//SHOW AD
-				adView = new AdView(this);
+				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);
+			    adView.loadAd(adRequest);*/
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
@@ -677,13 +677,13 @@ public class Hud extends ActionBarActivity
 			setContentView(R.layout.hud);
 
 			//SHOW AD
-			adView = new AdView(this);
+			/*adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 		    adView.setAdSize(AdSize.BANNER);
 		    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 		    layout.addView(adView);
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-		    adView.loadAd(adRequest);
+		    adView.loadAd(adRequest);*/
 
 			TextView mainText = (TextView) findViewById(R.id.mainText);
 			mainText.setText(getString(R.string.bt_not_available));
@@ -829,13 +829,13 @@ public class Hud extends ActionBarActivity
 			setContentView(R.layout.hud);
 
 			//SHOW AD
-			adView = new AdView(this);
+			/*adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 		    adView.setAdSize(AdSize.BANNER);
 		    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 		    layout.addView(adView);
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-		    adView.loadAd(adRequest);
+		    adView.loadAd(adRequest);*/
 
 			TextView mainText = (TextView) findViewById(R.id.mainText);
 			mainText.setText(getString(R.string.not_configured));
@@ -844,13 +844,13 @@ public class Hud extends ActionBarActivity
 		setContentView(R.layout.sender);
 
 		//SHOW AD
-		adView = new AdView(this);
+		/*adView = new AdView(this);
 	    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 	    adView.setAdSize(AdSize.BANNER);
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 	    layout.addView(adView);
 	    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-	    adView.loadAd(adRequest);
+	    adView.loadAd(adRequest);*/
 
 		TextView senderText = (TextView) findViewById(R.id.senderText);
 		TextView errorText = (TextView) findViewById(R.id.errorText);

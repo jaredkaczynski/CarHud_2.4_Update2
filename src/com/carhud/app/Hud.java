@@ -12,12 +12,6 @@ import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -85,15 +79,21 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.maxmpz.poweramp.player.PowerampAPI;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 public class Hud extends ActionBarActivity
 {
 	private static final String TAG = "com.carhud.app.hud";
     private static final boolean D = true;
-    
+
 	private static final int RESULT_SETTINGS = 1;
 	private static final int RESULT_ENABLE_GPS = 2;
 	private static final int RESULT_ENABLE_BLUETOOTH = 3;
-	
+
 	public static final int MESSAGE_STATE_CHANGE = 4;
 	public static final int MESSAGE_DEVICE_NAME = 5;
 	public static final int MESSAGE_READ = 6;
@@ -103,7 +103,7 @@ public class Hud extends ActionBarActivity
 	public static final String DEVICE_NAME = "device_name";
 	public static final String TOAST = "toast";
 	Button stopButton, startButton, closePopUp;
-	
+
 	private BroadcastReceiver mediaReceiver;
 	SharedPreferences sharedPrefs;
 
@@ -133,34 +133,34 @@ public class Hud extends ActionBarActivity
     private ObdBluetoothChatService oChatService = null;
     public mHandler mHandler = new mHandler(this);
     public cHandler cHandler = new cHandler(this);
-    public oHandler oHandler = new oHandler(this);    
+    public oHandler oHandler = new oHandler(this);
     private PopupWindow pw;
     private PopupWindow tpw;
     backgroundObd backgroundObd = new backgroundObd();
     localTempThread localTempThread = new localTempThread();
-    
+
     LinkedList<messagePopup> popupQueue = new LinkedList<messagePopup>();
-    
+
     Timer timer = new Timer();
-    
+
     private AdView adView;
     ActionBar ab;
-	
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) 
+	protected void onCreate(Bundle savedInstanceState)
 	{
 		if (D) Log.d(TAG, "onCreate()");
 		super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
-	    
+
     	CarHudApplication cha = ((CarHudApplication)getApplicationContext());
     	cha.setActivityRunning(true);
     	activityStarted = cha.getActivityRunning();
-    	
+
     	ab = getSupportActionBar();
     	ab.setTitle("");
 	}
-	
+
 	//SET DISPLAY AND COLOR
 	public void initDisplay()
 	{
@@ -183,7 +183,7 @@ public class Hud extends ActionBarActivity
 		//GLOBAL OPTIONS
 		showAltitude = sharedPrefs.getBoolean("showAltitude", false);
 		if (showAltitude)
-		{	
+		{
 			LinearLayout altitudelayout = (LinearLayout) findViewById(R.id.altitudelayout);
 			altitudelayout.setVisibility(View.VISIBLE);
 			TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
@@ -192,7 +192,7 @@ public class Hud extends ActionBarActivity
 		}
 		showTime = sharedPrefs.getBoolean("showTime", false);
 		if (showTime)
-		{	
+		{
 			LinearLayout timelayout = (LinearLayout) findViewById(R.id.timelayout);
 			timelayout.setVisibility(View.VISIBLE);
 			TextView timeText = (TextView) findViewById(R.id.timeText);
@@ -201,13 +201,13 @@ public class Hud extends ActionBarActivity
 		}
 		showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
 		if (showLocalTemp)
-		{	
+		{
 			LinearLayout localtemplayout = (LinearLayout) findViewById(R.id.localtemplayout);
 			localtemplayout.setVisibility(View.VISIBLE);
 			TextView localtempText = (TextView) findViewById(R.id.localtempText);
 			localtempText.setTextColor(dataColor);
 			setColorImage("temp","localtempTitle");
-		}		
+		}
 		//OBD2 OPTIONS
 		speedType = sharedPrefs.getString("speedType","gps");
 		if (speedType.equals("obd"))
@@ -219,7 +219,7 @@ public class Hud extends ActionBarActivity
 
 			showRPM = sharedPrefs.getBoolean("showRPM", true);
 			showRPMBar = sharedPrefs.getBoolean("showRPMBar", true);
-			
+
 			if (showRPM || showRPMBar)
 			{
 				LinearLayout rpmtextandgaugelayout = (LinearLayout) findViewById(R.id.rpmtextandgaugelayout);
@@ -236,7 +236,7 @@ public class Hud extends ActionBarActivity
 				TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
 				rpmTextLabel.setTextColor(dataColor);
 			}
-		
+
 			if (showRPMBar)
 			{
 				LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
@@ -245,14 +245,14 @@ public class Hud extends ActionBarActivity
 				GaugeLinearLayout gauge = (GaugeLinearLayout) findViewById(R.id.gauge);
 				gauge.setColor(dataColor);
 			}
-			
+
 			showTemp = sharedPrefs.getBoolean("showTemp", true);
 			if (showTemp)
 			{
 				TableRow coolantlayout = (TableRow) findViewById(R.id.coolantlayout);
 				coolantlayout.setVisibility(View.VISIBLE);
-				
-				setColorImage("temp","coolantTitle");				
+
+				setColorImage("temp","coolantTitle");
 				TextView coolantText = (TextView) findViewById(R.id.coolantText);
 				coolantText.setTextColor(dataColor);
 			}
@@ -262,10 +262,10 @@ public class Hud extends ActionBarActivity
 		if (useCobra)
 		{
 			TextView cobraConnectionTitle = (TextView) findViewById(R.id.cobraConnectionTitle);
-			cobraConnectionTitle.setTextColor(dataColor);		
-			findViewById(R.id.cobraConnectionTitle).setVisibility(View.VISIBLE);			
+			cobraConnectionTitle.setTextColor(dataColor);
+			findViewById(R.id.cobraConnectionTitle).setVisibility(View.VISIBLE);
 			findViewById(R.id.cobraConnection).setVisibility(View.VISIBLE);
-			
+
 			showBat = sharedPrefs.getBoolean("showBat", true);
 			if (showBat)
 			{
@@ -274,14 +274,14 @@ public class Hud extends ActionBarActivity
 				TextView batteryText = (TextView) findViewById(R.id.batteryText);
 				batteryText.setTextColor(dataColor);
 				setColorImage("bat","batteryTitle");
-			}			
+			}
 		}
 	}
 
 	// GET APP SETTINGS, RUN APPROPRIATE APP TYPE
 	public void startActivity()
 	{
-		if (D) Log.d(TAG, "startActivity()");		
+		if (D) Log.d(TAG, "startActivity()");
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
 		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
@@ -301,7 +301,7 @@ public class Hud extends ActionBarActivity
 				runSender();
 				break;
 			default: //Undefined
-				if (D) Log.d(TAG, "Setup type is undefined");	
+				if (D) Log.d(TAG, "Setup type is undefined");
 				setContentView(R.layout.hud);
 
 				//SHOW AD
@@ -311,11 +311,11 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
+			    adView.loadAd(adRequest);
 
 			    TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
-		}		
+		}
 	}
 
 	//SIZE TEXTVIEW
@@ -323,21 +323,21 @@ public class Hud extends ActionBarActivity
 	{
 		//SET FONT TO MATCH WIDTH
 		TextPaint textPaint = tv.getPaint();
-		float width = textPaint.measureText(measureText);		
+		float width = textPaint.measureText(measureText);
 		while (tv.getMeasuredWidth() - width > 10)
 		{
 			tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (tv.getTextSize() + 1));
 			width = textPaint.measureText(measureText);
-		}		
+		}
 		//REDUCE TOP/BOTTOM PADDING TO ACCOUNT FOR FONT PADDING
         int divFactor = (int) Math.round((textPaint.getTextSize() / this.getResources().getDisplayMetrics().density) * .20);
         int additionalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, divFactor, this.getResources().getDisplayMetrics());
         tv.setPadding(0, 0 - additionalPadding , 0, 0 - additionalPadding - Math.round(additionalPadding * 0.113f));
 	}
-	
+
 	//SIZE DISPLAY
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus) 
+	public void onWindowFocusChanged(boolean hasFocus)
 	{
 		if (hasFocus)
 		{
@@ -346,18 +346,18 @@ public class Hud extends ActionBarActivity
 			setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
 			if (setupType != 1 && setupType != 2)
 				return;
-	
+
 			//SPEEDOMETER
 			TextView speedText = (TextView) findViewById(R.id.speedText);
 			sizeTextView(speedText, "00");
-	
+
 			//GET VALUES BASED OFF SPEEDOMETER HEIGHT
 			speedText.measure(0, 0);
 			int padding = Math.round(speedText.getMeasuredHeight() * 0.085f);
 			int mediaFont = Math.round((speedText.getMeasuredHeight() * 0.16f) / this.getResources().getDisplayMetrics().density);
 			int smallerFont = Math.round(mediaFont * 0.65f);
 			int rpmBarHeight = Math.round((speedText.getMeasuredHeight() * 0.50f) / this.getResources().getDisplayMetrics().density);
-	
+
 			//RPM VIEWS
 			LinearLayout rpmtextlabellayout = (LinearLayout) findViewById(R.id.rpmtextlabellayout);
 			rpmtextlabellayout.setPadding(0, padding, 0, padding);
@@ -367,12 +367,12 @@ public class Hud extends ActionBarActivity
 	        //RPM LABEL
 	        TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
 	        rpmTextLabel.setTextSize(mediaFont);
-	
+
 	        //RPM BAR
 	        LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
 	        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 			showRPM = sharedPrefs.getBoolean("showRPM", true);
-	        //SPECIAL CASE FOR NO RPM TEXT        
+	        //SPECIAL CASE FOR NO RPM TEXT
 			if (!showRPM)
 			{
 				int rpmPadding = Math.round(speedText.getMeasuredHeight() * 0.05f);
@@ -382,7 +382,7 @@ public class Hud extends ActionBarActivity
 			}
 			else
 				rpmgaugelayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, rpmBarHeight));
-	
+
 	        //ARTIST TEXT
 	        TextView artistText = (TextView) findViewById(R.id.artistText);
 	        artistText.setTextSize(mediaFont);
@@ -408,7 +408,7 @@ public class Hud extends ActionBarActivity
 	        ImageView trackTitle = (ImageView) findViewById(R.id.trackTitle);
 	        trackTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
 	        trackTitle.setPadding(padding2, padding2, padding2, padding2);
-	
+
 	        //NAVIGATION TEXT
 	        TextView navigationText = (TextView) findViewById(R.id.navigationText);
 	        navigationText.setTextSize(mediaFont);
@@ -422,7 +422,7 @@ public class Hud extends ActionBarActivity
 	        //EXTIMATED DISTANCE
 	        TextView estDistance = (TextView) findViewById(R.id.estDistance);
 	        estDistance.setTextSize(smallerFont);
-	        
+
 	        //ALTITIDE TEXT
 	        TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
 	        altitudeText.setTextSize(mediaFont);
@@ -444,7 +444,7 @@ public class Hud extends ActionBarActivity
 	        ImageView timeTitle = (ImageView) findViewById(R.id.timeTitle);
 	        timeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
 	        timeTitle.setPadding(padding2, padding2, padding2, padding2);
-	
+
 	        //BATTERY TEXT
 	        TextView batteryText = (TextView) findViewById(R.id.batteryText);
 	        batteryText.setTextSize(mediaFont);
@@ -462,19 +462,19 @@ public class Hud extends ActionBarActivity
 	        super.onWindowFocusChanged(hasFocus);
 		}
 	}
-	
+
 	// STANDALONE TYPE
 	public void runStandAlone()
 	{
 		if (D) Log.d(TAG, "Running as standalone");
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
+
 		//CHECK REQUIREMENTS
 		speedType = sharedPrefs.getString("speedType","gps");
 		if (speedType.equals("obd"))
 		{
-			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");			
+			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
 			if (obdBtaddress.isEmpty())
 			{
 				if (D) Log.d(TAG, "No obd address");
@@ -487,22 +487,22 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
-				
+			    adView.loadAd(adRequest);
+
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
 				return;
-			}		
+			}
 		}
 		useCobra = sharedPrefs.getBoolean("useCobra",false);
 		if (useCobra)
 		{
-			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");			
+			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
 			if (cobraBtaddress.isEmpty())
 			{
 				if (D) Log.d(TAG, "No cobra address");
 				setContentView(R.layout.hud);
-				
+
 				//SHOW AD
 				adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -510,8 +510,8 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
-				
+			    adView.loadAd(adRequest);
+
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
 				return;
@@ -520,11 +520,11 @@ public class Hud extends ActionBarActivity
 		if (speedType.equals("obd") || useCobra)
 		{
 	        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-	        if (mBluetoothAdapter == null) 
+	        if (mBluetoothAdapter == null)
 	        {
 				if (D) Log.d(TAG, "No bluetooth device");
 				setContentView(R.layout.hud);
-				
+
 				//SHOW AD
 				adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -532,14 +532,14 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
+			    adView.loadAd(adRequest);
 
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.bt_not_available));
 	            return;
-	        }			
+	        }
 		}
-		
+
 		fullBright = sharedPrefs.getBoolean("fullBright", false);
 		if (fullBright)
 		{
@@ -550,8 +550,8 @@ public class Hud extends ActionBarActivity
 		if (screenOn)
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		else
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);			
-		
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		fullscreen = sharedPrefs.getBoolean("fullscreen", true);
 		if (fullscreen)
 		{
@@ -561,12 +561,12 @@ public class Hud extends ActionBarActivity
 		else
 		{
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);			
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 	    //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);		
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		mirror = sharedPrefs.getBoolean("mirror", false);
 		if (mirror)
 			setContentView(R.layout.hud_display_mirror);
@@ -592,7 +592,7 @@ public class Hud extends ActionBarActivity
 			obdNeeded = true;
 			startBluetoothOBD2();
 		}
-				
+
 		//REGISTER MEDIA METADATA RECEIVER
 		if (mediaReceiver == null)
 		{
@@ -606,7 +606,7 @@ public class Hud extends ActionBarActivity
 			filter.addAction(PowerampAPI.ACTION_TRACK_CHANGED);
 			registerReceiver(mediaReceiver, filter);
 		}
-		
+
 		//START COBRA IRADAR
 		useCobra = sharedPrefs.getBoolean("useCobra",false);
 		if (useCobra)
@@ -615,24 +615,24 @@ public class Hud extends ActionBarActivity
 			startCobraIradar();
 		}
 	}
-	
+
 	// RECEIVER TYPE
 	public void runReceiver()
 	{
 		if (D) Log.d(TAG, "Running as receiver");
 
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
+
 		//CHECK REQUIREMENTS
 		speedType = sharedPrefs.getString("speedType","gps");
 		if (speedType.equals("obd"))
 		{
-			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");			
+			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
 			if (obdBtaddress.isEmpty())
 			{
 				if (D) Log.d(TAG, "No obd address");
 				setContentView(R.layout.hud);
-				
+
 				//SHOW AD
 				adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -640,17 +640,17 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
-				
+			    adView.loadAd(adRequest);
+
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
 				return;
-			}		
+			}
 		}
 		useCobra = sharedPrefs.getBoolean("useCobra",false);
 		if (useCobra)
 		{
-			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");			
+			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
 			if (cobraBtaddress.isEmpty())
 			{
 				if (D) Log.d(TAG, "No cobra address");
@@ -663,19 +663,19 @@ public class Hud extends ActionBarActivity
 			    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 			    layout.addView(adView);
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-			    adView.loadAd(adRequest);				
-				
+			    adView.loadAd(adRequest);
+
 				TextView mainText = (TextView) findViewById(R.id.mainText);
 				mainText.setText(getString(R.string.not_configured));
 				return;
 			}
 		}
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null) 
+        if (mBluetoothAdapter == null)
         {
 			if (D) Log.d(TAG, "No bluetooth device");
 			setContentView(R.layout.hud);
-			
+
 			//SHOW AD
 			adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -683,13 +683,13 @@ public class Hud extends ActionBarActivity
 		    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 		    layout.addView(adView);
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-		    adView.loadAd(adRequest);				
-			
+		    adView.loadAd(adRequest);
+
 			TextView mainText = (TextView) findViewById(R.id.mainText);
 			mainText.setText(getString(R.string.bt_not_available));
             return;
         }
-		
+
 		fullBright = sharedPrefs.getBoolean("fullBright", false);
 		if (fullBright)
 		{
@@ -700,8 +700,8 @@ public class Hud extends ActionBarActivity
 		if (screenOn)
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		else
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);			
-		
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 		fullscreen = sharedPrefs.getBoolean("fullscreen", true);
 		if (fullscreen)
 		{
@@ -711,11 +711,11 @@ public class Hud extends ActionBarActivity
 		else
 		{
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);			
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		}
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		
-		senderNeeded = true;		
+
+		senderNeeded = true;
 		BluetoothAdapter.getDefaultAdapter().enable();
 	    //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -724,20 +724,20 @@ public class Hud extends ActionBarActivity
 			setContentView(R.layout.hud_display_mirror);
 	    else
 	    	setContentView(R.layout.hud_display);
-		
+
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		screenWidth = size.x;
-		
+
 		initDisplay();
-		
-        if (!mBluetoothAdapter.isEnabled()) 
+
+        if (!mBluetoothAdapter.isEnabled())
         {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, RESULT_ENABLE_BLUETOOTH);
-        } 
-        else 
+        }
+        else
         {
 			TextView senderConnectionTitle = (TextView) findViewById(R.id.senderConnectionTitle);
 			senderConnectionTitle.setTextColor(dataColor);
@@ -748,7 +748,7 @@ public class Hud extends ActionBarActivity
             mChatService.start();
 		}
 
-        speedType = sharedPrefs.getString("speedType","gps");		
+        speedType = sharedPrefs.getString("speedType","gps");
 		showAltitude = sharedPrefs.getBoolean("showAltitude", false);
 		showTime = sharedPrefs.getBoolean("showTime", false);
 		showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
@@ -768,17 +768,17 @@ public class Hud extends ActionBarActivity
 		{
 			cobraNeeded = true;
 			startCobraIradar();
-		}	
-	}	
-	
+		}
+	}
+
 	// SENDER TYPE
 	public void runSender()
 	{
 		if (D) Log.d(TAG, "Running as sender");
-		
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);			
+
+		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
     	sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -791,16 +791,16 @@ public class Hud extends ActionBarActivity
     		dlgAlert.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener()
     		{
     			@Override
-                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) 
+                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked)
     			{
-                    if (isChecked) 
+                    if (isChecked)
                     {
         	    		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         	    		SharedPreferences.Editor editor = sharedPrefs.edit();
         	    		editor.putBoolean("skipNotificationWarning", true);
         	    		editor.commit();
-                    } 
-                    else 
+                    }
+                    else
                     {
         	    		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         	    		SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -816,18 +816,18 @@ public class Hud extends ActionBarActivity
     			{
 					dialog.dismiss();
     			}
-    		});	        		
+    		});
     		dlgAlert.setCancelable(true);
     		dlgAlert.create().show();
     	}
-    	
+
 	    BluetoothAdapter.getDefaultAdapter().enable();
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		btaddress = sharedPrefs.getString("btaddress", "");
 		if (btaddress.isEmpty())
 		{
 			setContentView(R.layout.hud);
-			
+
 			//SHOW AD
 			adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -835,14 +835,14 @@ public class Hud extends ActionBarActivity
 		    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 		    layout.addView(adView);
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-		    adView.loadAd(adRequest);				
-			
+		    adView.loadAd(adRequest);
+
 			TextView mainText = (TextView) findViewById(R.id.mainText);
 			mainText.setText(getString(R.string.not_configured));
 			return;
 		}
 		setContentView(R.layout.sender);
-		
+
 		//SHOW AD
 		adView = new AdView(this);
 	    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
@@ -850,22 +850,22 @@ public class Hud extends ActionBarActivity
 	    LinearLayout layout = (LinearLayout)findViewById(R.id.adLayout);
 	    layout.addView(adView);
 	    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
-	    adView.loadAd(adRequest);						
-		
+	    adView.loadAd(adRequest);
+
 		TextView senderText = (TextView) findViewById(R.id.senderText);
 		TextView errorText = (TextView) findViewById(R.id.errorText);
 
 		stopButton = (Button) findViewById(R.id.stop_button);
 		startButton = (Button) findViewById(R.id.start_button);
-		
+
 		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
 		serviceStarted = cha.getServiceRunning();
 		if (serviceStarted == true)
 		{
 			startButton.setBackgroundColor(Color.parseColor("#706168"));
 			startButton.setClickable(false);
-			stopButton.setBackgroundColor(Color.parseColor("#A6180A"));			
-			stopButton.setClickable(true);					
+			stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
+			stopButton.setClickable(true);
 			CarHudSenderService.setMainActivity(this);
 			senderText.setText(cha.getlastMessage());
 			errorText.setText(cha.getlastError());
@@ -881,9 +881,9 @@ public class Hud extends ActionBarActivity
 		    }
 		    else
 		    {
-				startButton.setBackgroundColor(Color.parseColor("#00F700"));						    	
+				startButton.setBackgroundColor(Color.parseColor("#00F700"));
 				startButton.setClickable(true);
-				stopButton.setBackgroundColor(Color.parseColor("#706168"));				
+				stopButton.setBackgroundColor(Color.parseColor("#706168"));
 				stopButton.setClickable(false);
 		    	errorText.setText(getString(R.string.bt_not_available));
 		    	cha.setLastError(getString(R.string.bt_not_available));
@@ -892,28 +892,28 @@ public class Hud extends ActionBarActivity
 		}
 
 		//SERVICE BUTTONS
-	     stopButton.setOnClickListener(new View.OnClickListener() 
+	     stopButton.setOnClickListener(new View.OnClickListener()
 	     {
 	         @Override
-			public void onClick(View v) 
+			public void onClick(View v)
 	         {
 	 			CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-	        	cha.setServiceRunning(false);        	
+	        	cha.setServiceRunning(false);
 	        	stopService(new Intent(cha, CarHudSenderService.class));
-				startButton.setBackgroundColor(Color.parseColor("#00F700"));						    	
+				startButton.setBackgroundColor(Color.parseColor("#00F700"));
 	     		startButton.setClickable(true);
-				stopButton.setBackgroundColor(Color.parseColor("#706168"));				
-	    		stopButton.setClickable(false);		
+				stopButton.setBackgroundColor(Color.parseColor("#706168"));
+	    		stopButton.setClickable(false);
 	    		TextView senderText = (TextView) findViewById(R.id.senderText);
 	    		senderText.setText(getString(R.string.service_stopped));
-	    		cha.setLastMessage(getString(R.string.service_stopped));		
+	    		cha.setLastMessage(getString(R.string.service_stopped));
 	         }
 	     });
 		 final Button startButton = (Button) findViewById(R.id.start_button);
-	     startButton.setOnClickListener(new View.OnClickListener() 
+	     startButton.setOnClickListener(new View.OnClickListener()
 	     {
 	         @Override
-			public void onClick(View v) 
+			public void onClick(View v)
 	         {
 	 		    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 			    if (mBluetoothAdapter.isEnabled())
@@ -933,8 +933,8 @@ public class Hud extends ActionBarActivity
 			    }
 	         }
 	     });
-	}	
-	
+	}
+
 	//START SERVICE
 	public void startService()
 	{
@@ -949,10 +949,10 @@ public class Hud extends ActionBarActivity
 		cha.setServiceRunning(true);
 		startService(new Intent(cha, CarHudSenderService.class));
 		CarHudSenderService.setMainActivity(this);
-		
-		startButton.setBackgroundColor(Color.parseColor("#706168"));		
+
+		startButton.setBackgroundColor(Color.parseColor("#706168"));
 		startButton.setClickable(false);
-		stopButton.setBackgroundColor(Color.parseColor("#A6180A"));			
+		stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
 		stopButton.setClickable(true);
 	}
 
@@ -965,13 +965,13 @@ public class Hud extends ActionBarActivity
 		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
 		cha.setServiceRunning(false);
 		stopService(new Intent(cha, CarHudSenderService.class));
-		
+
 		TextView errorText = (TextView) findViewById(R.id.errorText);
 		errorText.setText(R.string.gps_not_available);
 		cha.setLastError(getString(R.string.gps_not_available));
-		startButton.setBackgroundColor(Color.parseColor("#00F700"));		
+		startButton.setBackgroundColor(Color.parseColor("#00F700"));
 		startButton.setClickable(true);
-		stopButton.setBackgroundColor(Color.parseColor("#706168"));			
+		stopButton.setBackgroundColor(Color.parseColor("#706168"));
 		stopButton.setClickable(false);
 	}
 
@@ -984,62 +984,62 @@ public class Hud extends ActionBarActivity
 		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
 		cha.setServiceRunning(false);
 		stopService(new Intent(cha, CarHudSenderService.class));
-		
+
 		TextView errorText = (TextView) findViewById(R.id.errorText);
 		errorText.setText(R.string.mockgps_not_available);
 		cha.setLastError(getString(R.string.mockgps_not_available));
-		startButton.setBackgroundColor(Color.parseColor("#00F700"));		
+		startButton.setBackgroundColor(Color.parseColor("#00F700"));
 		startButton.setClickable(true);
-		stopButton.setBackgroundColor(Color.parseColor("#706168"));			
+		stopButton.setBackgroundColor(Color.parseColor("#706168"));
 		stopButton.setClickable(false);
 	}
-	
-	
-    public static class mHandler extends Handler 
+
+
+    public static class mHandler extends Handler
     {
-    	 
+
         private final Hud mActivity;
-        public mHandler(Hud activity) 
+        public mHandler(Hud activity)
         {
             mActivity = activity;
         }
- 
+
         @Override
-        public void handleMessage(Message msg) 
+        public void handleMessage(Message msg)
         {
-            switch (msg.what) 
+            switch (msg.what)
             {
             	case MESSAGE_STATE_CHANGE:
                     if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) 
+                    switch (msg.arg1)
                     {
                     	case BluetoothChatServiceReceiver.STATE_CONNECTED:
-                    		mActivity.senderConnected = true;                    			                		                    		
+                    		mActivity.senderConnected = true;
                             mActivity.setColorImage("connected","senderConnection");
-                    		mActivity.checkConnectionsAndHide();                            
+                    		mActivity.checkConnectionsAndHide();
                             break;
                     	case BluetoothChatServiceReceiver.STATE_CONNECTING:
-                    		mActivity.senderConnected = false;                    		
+                    		mActivity.senderConnected = false;
                             mActivity.setColorImage("connecting","senderConnection");
-                    		mActivity.checkConnectionsAndHide();                            
-                            break;                    		
+                    		mActivity.checkConnectionsAndHide();
+                            break;
                     	case BluetoothChatServiceReceiver.STATE_LISTEN:
                     	case BluetoothChatServiceReceiver.STATE_NONE:
-                    		mActivity.senderConnected = false;                    		
+                    		mActivity.senderConnected = false;
                             mActivity.setColorImage("notconnected","senderConnection");
-                    		mActivity.checkConnectionsAndHide();                                                        
+                    		mActivity.checkConnectionsAndHide();
                     		break;
                     }
             		break;
                 case MESSAGE_WRITE:
-                    break;            		
+                    break;
             	case MESSAGE_READ:
-      	          if (D) Log.d(TAG, "message_read()");	                	            		
+      	          if (D) Log.d(TAG, "message_read()");
 	                byte[] readBuf = (byte[]) msg.obj;
 	                	String str = new String(readBuf, 0, msg.arg1);
 	                	StringTokenizer st = new StringTokenizer(str, "~");
 	                	String artist = "", album = "", track = "", type = "", ntype = "", ss = "", error = "";
-	                	
+
 	                	if (st.hasMoreElements())
 	                		type = st.nextElement().toString();
 	                	if (type.equals("NAVIGATION"))
@@ -1073,13 +1073,13 @@ public class Hud extends ActionBarActivity
 				                		}
 				                		if (!nextAction.isEmpty())
 				                			mActivity.showNavigation(nextAction);
-			                		}			                	
+			                		}
 			                	}
 		                	}
 		                	//HIDE NAVIGATION AREA
 		                	else if (ntype.equals("CLEARED"))
 		                	{
-		                		mActivity.hideNavigation();		                		
+		                		mActivity.hideNavigation();
 		                	}
 	                	}
 	                	if (type.equals("MEDIA"))
@@ -1095,9 +1095,9 @@ public class Hud extends ActionBarActivity
 	                	if (type.equals("GPS"))
 	                	{
 	                		//SPEED
-	                		double currentSpeed = 0;	                		
+	                		double currentSpeed = 0;
 		                	if (st.hasMoreElements())
-		                		currentSpeed = Double.parseDouble(st.nextElement().toString());	                	
+		                		currentSpeed = Double.parseDouble(st.nextElement().toString());
 	                		//ALTITUDE
 		                	double currentAltitude = 0;
 		                	if (st.hasMoreElements())
@@ -1110,7 +1110,7 @@ public class Hud extends ActionBarActivity
 	                		if (st.hasMoreElements())
 	                			mActivity.lat = Double.parseDouble(st.nextElement().toString());
 	                		if (st.hasMoreElements())
-	                			mActivity.lon = Double.parseDouble(st.nextElement().toString());	                		
+	                			mActivity.lon = Double.parseDouble(st.nextElement().toString());
 
 	                		//SPEED
 	                		mActivity.speedType = mActivity.sharedPrefs.getString("speedType", "gps");
@@ -1119,10 +1119,10 @@ public class Hud extends ActionBarActivity
 						    	mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
 						    	if (!mActivity.useMetric)
 						    		currentSpeed = currentSpeed*2.2369;
-								String tmp = String.format(Locale.US,"%.0f",currentSpeed); 
+								String tmp = String.format(Locale.US,"%.0f",currentSpeed);
 								mActivity.setSpeed(tmp);
 	                		}
-	                		
+
 	                		//ALTITUDE
 	                		mActivity.showAltitude = mActivity.sharedPrefs.getBoolean("showAltitude", false);
 	                		if (mActivity.showAltitude)
@@ -1130,15 +1130,15 @@ public class Hud extends ActionBarActivity
 						    	mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
 						    	if (!mActivity.useMetric)
 						    		currentAltitude = currentAltitude*3.2808399;
-								String tmp = String.format(Locale.US,"%.0f",currentAltitude); 
+								String tmp = String.format(Locale.US,"%.0f",currentAltitude);
 								mActivity.setAltitude(tmp);
 	                		}
-	                		
+
 	                		//TIME
 	                		mActivity.showTime = mActivity.sharedPrefs.getBoolean("showTime", false);
 	                		if (mActivity.showTime)
 								mActivity.setTime(localTime);
-	                	}	                		                		                	
+	                	}
 	                	if (type.equals("SMS"))
 	                	{
 	                		String title = "", message = "";
@@ -1173,7 +1173,7 @@ public class Hud extends ActionBarActivity
             }
         }
     }
-        
+
  // To animate view slide out from top to bottom
     public void slideToBottom(View view)
     {
@@ -1183,18 +1183,18 @@ public class Hud extends ActionBarActivity
 	    animate.setFillAfter(true);
 	    view.startAnimation(animate);
 	    view.setVisibility(View.GONE);
-    }    
-    
+    }
+
  // To animate view slide out from bottom to top
     public void slideToTop(View view)
     {
-    	TranslateAnimation animate = new TranslateAnimation(0,0,statusHeight,0); 
+    	TranslateAnimation animate = new TranslateAnimation(0,0,statusHeight,0);
     	animate.setDuration(500);
     	animate.setFillAfter(true);
     	view.startAnimation(animate);
     	view.setVisibility(View.VISIBLE);
     }
-    
+
     //SEE IF CONNECTIONS ARE MADE AND HIDE STATUS BAR IF ALL IS GOOD
     public void checkConnectionsAndHide()
     {
@@ -1204,7 +1204,7 @@ public class Hud extends ActionBarActivity
     	if (cobraNeeded && !cobraConnected)
     		allConnected = false;
     	if (obdNeeded && !obdConnected)
-    		allConnected = false; 
+    		allConnected = false;
     	if (allConnected)
     	{
     		if (!statusHiding)
@@ -1227,17 +1227,17 @@ public class Hud extends ActionBarActivity
     		}
     	}
     }
-    
+
     //HIDE STATUS BAR RUNNABLE
-    Runnable hideStatus = new Runnable() 
-    { 
+    Runnable hideStatus = new Runnable()
+    {
          @Override
-		public void run() 
+		public void run()
          {
-     		slideToBottom(findViewById(R.id.statusBar)); 
+     		slideToBottom(findViewById(R.id.statusBar));
      		statusShown = false;
      		statusHiding = false;
-         } 
+         }
     };
 
     //SET ARRIVAL TIME
@@ -1259,15 +1259,15 @@ public class Hud extends ActionBarActivity
 		estDistance.setTextColor(dataColor);
 		estDistance.setText(distance);
     }
-    
+
     //HIDE MEDIA RUNNABLE
-    Runnable hideMedia = new Runnable() 
-    { 
+    Runnable hideMedia = new Runnable()
+    {
          @Override
-		public void run() 
+		public void run()
          {
         	 //SHOW BAT AND TEMP AGAIN IF NEEDED
-     		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());        	 
+     		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
      		boolean uc = sharedPrefs.getBoolean("useCobra",false);
     		if (uc)
     		{
@@ -1280,12 +1280,12 @@ public class Hud extends ActionBarActivity
 	    		findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
 	    		findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
     		}
-      		slideToBottom(findViewById(R.id.mediaotherlayout));        	 
+      		slideToBottom(findViewById(R.id.mediaotherlayout));
      		slideToTop(findViewById(R.id.navigationlayout));
-    		tempMediaShown = false;     		
-         } 
+    		tempMediaShown = false;
+         }
     };
-    
+
     //QUICK SHOW MEDIA WHEN NAVIGATION IS SHOWN AND NOT IN A CLOSE ALERT
     public void quickShowMedia()
     {
@@ -1301,20 +1301,20 @@ public class Hud extends ActionBarActivity
 	    		findViewById(R.id.batteryText).setVisibility(View.GONE);
 	    		findViewById(R.id.coolantTitle).setVisibility(View.GONE);
 	    		findViewById(R.id.coolantText).setVisibility(View.GONE);
-	    		
-	    		slideToBottom(findViewById(R.id.navigationlayout));    		
+
+	    		slideToBottom(findViewById(R.id.navigationlayout));
 	    		slideToTop(findViewById(R.id.mediaotherlayout));
     		}
 			mediaViewHandler.postDelayed(hideMedia, 3000);
     	}
     }
-    
+
     //IF NAVIGATION CLOSE ALERT AND TEMP MEDIA IS SHOWN, QUICKLY GO BACK TO NAVIGATION
     public void immediateSwitchNavigation()
     {
 		mediaViewHandler.removeCallbacks(hideMedia);
    	 	//SHOW BAT AND TEMP AGAIN IF NEEDED
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());        	 
+		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		boolean uc = sharedPrefs.getBoolean("useCobra",false);
 		if (uc)
 		{
@@ -1326,18 +1326,18 @@ public class Hud extends ActionBarActivity
 		{
 			findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
 			findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
-		}		
-  		slideToBottom(findViewById(R.id.mediaotherlayout));        	 
+		}
+  		slideToBottom(findViewById(R.id.mediaotherlayout));
  		slideToTop(findViewById(R.id.navigationlayout));
-		tempMediaShown = false;     		    	
+		tempMediaShown = false;
     }
-    
+
     //SHOW NAVIGATION
     public void showNavigation(String ss)
     {
     	if (!navigationShown)
     		slideToBottom(findViewById(R.id.mediaotherlayout));
-    	
+
 		ImageView iv = (ImageView) findViewById(R.id.navigationIcon);
 		iv.setVisibility(View.GONE);
 
@@ -1345,10 +1345,10 @@ public class Hud extends ActionBarActivity
 		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 		dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
 //		navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-		
+
 		navigationText.setTextColor(dataColor);
 		navigationText.setText(ss);
-		
+
 		navigationCloseAlert = false;
 		if (ss.startsWith("0.1mi") || ss.startsWith("500ft") || ss.startsWith("450ft") || ss.startsWith("400ft") || ss.startsWith("350ft") || ss.startsWith("300ft") || ss.startsWith("250ft") || ss.startsWith("200ft") || ss.startsWith("150ft") || ss.startsWith("100ft") || ss.startsWith("50ft") || ss.startsWith("0ft"))
 		{
@@ -1356,9 +1356,9 @@ public class Hud extends ActionBarActivity
 			if (tempMediaShown)
 				immediateSwitchNavigation();
 		}
-		
+
 		int imageId = -1;
-		
+
 		if (ss.contains("Head"))
 			imageId = R.drawable.depart;
 		else if (ss.contains("Turn left"))
@@ -1438,8 +1438,8 @@ public class Hud extends ActionBarActivity
 				iv.setColorFilter(0xFF000000);
 				iv.setBackgroundColor(dataColor);
 			}
-		}		
-		
+		}
+
 		if (!navigationShown)
 			slideToTop(findViewById(R.id.navigationlayout));
 		navigationShown = true;
@@ -1455,7 +1455,7 @@ public class Hud extends ActionBarActivity
     	}
 		navigationShown = false;
     }
-    
+
     //SET SENDER TEXT
     public void setSenderText(String msg)
     {
@@ -1480,7 +1480,7 @@ public class Hud extends ActionBarActivity
     {
     	Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
-    
+
     //DISPLAY MEDIA INFO
     public void displayMedia(String artist, String album, String track)
     {
@@ -1490,25 +1490,25 @@ public class Hud extends ActionBarActivity
 		if (lastArtistAlbumTrack == null)
 			lastArtistAlbumTrack = "";
 		String newArtistAlbumTrack = artist + album + track;
-		
+
 		if (D) Log.w(TAG, "last = " + lastArtistAlbumTrack + ", new = " + newArtistAlbumTrack);
 		//DONT UPDATE THE UI IF THE DATA HASN'T CHANGED
-		if (!lastArtistAlbumTrack.equals(newArtistAlbumTrack)) 
-		{	
+		if (!lastArtistAlbumTrack.equals(newArtistAlbumTrack))
+		{
 			cha.setLastArtistAlbumTrack(newArtistAlbumTrack);
 	    	TextView artistTextView = (TextView) findViewById(R.id.artistText);
 	    	TextView albumTextView = (TextView) findViewById(R.id.albumText);
 	    	TextView trackTextView = (TextView) findViewById(R.id.trackText);
-	
+
 	    	artistTextView.clearAnimation();
 	    	albumTextView.clearAnimation();
 	    	trackTextView.clearAnimation();
-	
-	    	artistTextView.setText(artist);    	
-	    	albumTextView.setText(album);    	
+
+	    	artistTextView.setText(artist);
+	    	albumTextView.setText(album);
 	    	trackTextView.setText(track);
-	
-	
+
+
 	    	int[] location = new int[2];
 	    	artistTextView.getLocationOnScreen(location);
 	    	artistStart = location[0];
@@ -1516,14 +1516,14 @@ public class Hud extends ActionBarActivity
 	    	albumStart = location[0];
 	    	trackTextView.getLocationOnScreen(location);
 	    	trackStart = location[0];
-	    	
+
 	    	artistTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 	    	artistWidth = artistTextView.getMeasuredWidth();
 	    	albumTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 	    	albumWidth = albumTextView.getMeasuredWidth();
 	    	trackTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 	    	trackWidth = trackTextView.getMeasuredWidth();
-	    	
+
 	    	if (artistWidth + artistStart > screenWidth)
 	    	{
 	    		animationOn = 1;
@@ -1539,38 +1539,38 @@ public class Hud extends ActionBarActivity
 	    		animationOn = 3;
 	    		animateTextView(trackWidth, trackStart, trackTextView);
 	    	}
-	    	
+
 	    	if (navigationShown)
 	    		quickShowMedia();
 		}
     }
-    
+
     //CREATE TICKER TEXT FOR TEXTVIEW
     public void animateTextView(float width, float start, TextView tv)
     {
    		int scrollBy = (int) Math.round(screenWidth - start - width - 50);
    		int time = Math.abs(scrollBy) * 10;
         Animation mAnimation = new TranslateAnimation(0, scrollBy, 0, 0);
-        mAnimation.setDuration(time); 
+        mAnimation.setDuration(time);
         mAnimation.setStartOffset(1000);
         mAnimation.setAnimationListener(al);
         tv.setAnimation(mAnimation);
     }
 
     //KEEP TRACK OF ANIMATIONS
-    AnimationListener al = new AnimationListener() 
+    AnimationListener al = new AnimationListener()
     {
     	@Override
-		public void onAnimationStart(Animation animation) 
+		public void onAnimationStart(Animation animation)
     	{
     	}
     	@Override
-		public void onAnimationRepeat(Animation animation) 
+		public void onAnimationRepeat(Animation animation)
     	{
     	}
     	// at the end of the animation, start new activity
     	@Override
-		public void onAnimationEnd(Animation animation) 
+		public void onAnimationEnd(Animation animation)
     	{
         	TextView artistTextView = (TextView) findViewById(R.id.artistText);
         	TextView albumTextView = (TextView) findViewById(R.id.albumText);
@@ -1636,7 +1636,7 @@ public class Hud extends ActionBarActivity
     };
 
 	//SEE IF MOCK LOCATION IS ENABLED
-	public static boolean isMockSettingsON(Context context) 
+	public static boolean isMockSettingsON(Context context)
 	{
 		// returns true if mock location enabled, false if not enabled.
 		if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
@@ -1644,12 +1644,12 @@ public class Hud extends ActionBarActivity
 		else
 			return true;
 	}
-	
+
 	//START GPS LISTENER
 	public void getGPSdata()
 	{
 		if (D) Log.d(TAG, "getGPSdata()");
-		locationManager = (LocationManager) getSystemService (Context.LOCATION_SERVICE);		
+		locationManager = (LocationManager) getSystemService (Context.LOCATION_SERVICE);
 		mockGPS = sharedPrefs.getBoolean("mockGPS", false);
 		if (mockGPS)
 		{
@@ -1667,7 +1667,7 @@ public class Hud extends ActionBarActivity
 			currentSpeed = 0;
 			currentAltitude = 0;
 			currentTime = "";
-			locationListener = new gpsSpeedListener(); 
+			locationListener = new gpsSpeedListener();
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 			showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
 			if (showLocalTemp)

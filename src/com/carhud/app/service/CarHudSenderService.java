@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -16,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
@@ -43,25 +45,24 @@ import com.carhud.app.Hud;
 import com.carhud.app.R;
 import com.maxmpz.poweramp.player.PowerampAPI;
 
-public class CarHudSenderService extends Service
-{
+public class CarHudSenderService extends Service {
 	public static final String TAG = "com.carhud.app.carhudsenderservice";
 	private static final boolean D = true;
-	
+
 	private nHandler nHandler = new nHandler(this);
-    private BluetoothAdapter mBluetoothAdapter = null;
-    private BluetoothChatServiceSender mChatService = null;
+	private BluetoothAdapter mBluetoothAdapter = null;
+	private BluetoothChatServiceSender mChatService = null;
 	public static final int MESSAGE_STATE_CHANGE = 1;
 	public static final int MESSAGE_DEVICE_NAME = 2;
 	public static final int MESSAGE_READ = 3;
-    public static final int MESSAGE_WRITE = 4;
+	public static final int MESSAGE_WRITE = 4;
 	public static final int MESSAGE_CONNECTION_LOST = 6;
 	private BroadcastReceiver mediaReceiver;
-    String btaddress = "", artist = "", album = "", track = "";
-    WakeLock wakeLock;
-    final int HELLO_ID = 1;
-    private static Hud HUD;
-    Timer timer = new Timer();
+	String btaddress = "", artist = "", album = "", track = "";
+	WakeLock wakeLock;
+	final int HELLO_ID = 1;
+	private static Hud HUD;
+	Timer timer = new Timer();
 	public static final String DEVICE_NAME = "device_name";
 	public static final String TOAST = "toast";
 	Boolean connectionRestarting = false;
@@ -71,61 +72,54 @@ public class CarHudSenderService extends Service
 	private LocationListener locationListener;
 	double currentSpeed, currentAltitude, lat, lon;
 	String currentTime;
-	
+
 	@Override
-	public IBinder onBind(Intent intent) 
-	{
- 		if (D) Log.w(TAG, "onBind()");
+	public IBinder onBind(Intent intent) {
+		if (D) Log.w(TAG, "onBind()");
 		return null;
 	}
-    
- 	@Override
-	public void onCreate() 
-	{
-    	if (D) Log.w(TAG, "onCreate()");
-    	CarHudApplication cha = ((CarHudApplication)getApplicationContext());
+
+	@Override
+	public void onCreate() {
+		if (D) Log.w(TAG, "onCreate()");
+		CarHudApplication cha = ((CarHudApplication) getApplicationContext());
 		cha.setServiceRunning(true);
 	}
- 	
+
 	@Override
-	public void onStart(Intent intent, int startid)
-	{
-    	if (D) Log.w(TAG, "onStart()");
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
+	public void onStart(Intent intent, int startid) {
+		if (D) Log.w(TAG, "onStart()");
+		CarHudApplication cha = ((CarHudApplication) getApplicationContext());
 		cha.setServiceRunning(true);
 		init();
 	}
-	
-	public static void setMainActivity(Hud activity)
-	{
+
+	public static void setMainActivity(Hud activity) {
 		HUD = activity;
 	}
 
 	//SEE IF MOCK LOCATION IS ENABLED
-	public static boolean isMockSettingsON(Context context) 
-	{
+	public static boolean isMockSettingsON(Context context) {
 		// returns true if mock location enabled, false if not enabled.
 		if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
 			return false;
 		else
 			return true;
 	}
-	 
- 	@Override
- 	public int onStartCommand(Intent intent, int flags, int startId)
- 	{
-    	if (D) Log.w(TAG, "onStartCommand()");
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		if (D) Log.w(TAG, "onStartCommand()");
+		CarHudApplication cha = ((CarHudApplication) getApplicationContext());
 		cha.setServiceRunning(true);
 
- 		//CREATE WAKELOCK TO KEEP WORKING WHEN SYSTEM OFF
- 		PowerManager mgr = (PowerManager)this.getSystemService(Context.POWER_SERVICE);
- 		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
- 		wakeLock.acquire();
- 		
+		//CREATE WAKELOCK TO KEEP WORKING WHEN SYSTEM OFF
+		PowerManager mgr = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+		wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+		wakeLock.acquire();
+
 		//REGISTER MEDIA METADATA RECEIVER
-		if (mediaReceiver == null)
-		{
+		if (mediaReceiver == null) {
 			mediaReceiver = new MediaReceiver();
 			IntentFilter filter = new IntentFilter();
 			filter.addAction("com.android.music.metachanged");
@@ -134,56 +128,58 @@ public class CarHudSenderService extends Service
 			filter.addAction("com.android.music.queuechanged");
 			filter.addAction(PowerampAPI.ACTION_TRACK_CHANGED);
 			filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-			filter.addAction("android.intent.action.PHONE_STATE");			
+			filter.addAction("android.intent.action.PHONE_STATE");
 			registerReceiver(mediaReceiver, filter);
 		}
 
 		//REGISTER NOTIFICATION LISTENER RECEIVER (ONLY WORKS FOR 4.3 AND UP)
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean interceptNav = sharedPrefs.getBoolean("interceptNav", false);
-    	if(Build.VERSION.SDK_INT >= 18 && interceptNav)
-    	{
-	        nReceiver = new NotificationReceiver(this);
-	        IntentFilter filter = new IntentFilter();
-	        filter.addAction("com.carhud.app.NOTIFICATION_LISTENER_MESSAGE");
-	        registerReceiver(nReceiver,filter);
-    	}
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Boolean interceptNav = sharedPrefs.getBoolean("interceptNav", false);
+		if (Build.VERSION.SDK_INT >= 18 && interceptNav) {
+			nReceiver = new NotificationReceiver(this);
+			IntentFilter filter = new IntentFilter();
+			filter.addAction("com.carhud.app.NOTIFICATION_LISTENER_MESSAGE");
+			registerReceiver(nReceiver, filter);
+		}
 		sendGPSdata = sharedPrefs.getBoolean("sendGPSdata", false);
-		if (sendGPSdata)
-		{
-			locationManager = (LocationManager) getSystemService (Context.LOCATION_SERVICE);
+		if (sendGPSdata) {
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			mockGPSsender = sharedPrefs.getBoolean("mockGPSsender", false);
-			if (mockGPSsender)
-			{
-				if (isMockSettingsON(this))
-				{
+			if (mockGPSsender) {
+				if (isMockSettingsON(this)) {
 					String mocLocationProvider = LocationManager.GPS_PROVIDER;
 					locationManager.addTestProvider(mocLocationProvider, false, false, false, false, true, true, true, 0, 5);
 					locationManager.setTestProviderEnabled(mocLocationProvider, true);
-				}
-				else
+				} else
 					HUD.stopServiceMockGPS();
-			}	
-			
-			if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ))
-			{
+			}
+
+			if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 				if (D) Log.d(TAG, "gps says its on!");
 				getGPSdata();
-			}
-			else
+			} else
 				HUD.stopServiceGPS();
 		}
 
-		init(); 		
+		init();
 
 		return START_STICKY;
- 	}
- 	
+	}
+
 	//START GPS LISTENER
-	public void getGPSdata()
-	{
+	public void getGPSdata() {
 		if (D) Log.d(TAG, "getGPSdata()");
-		locationListener = new gpsSpeedListener(); 
+		locationListener = new gpsSpeedListener();
+		if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			// TODO: Consider calling
+			//    Activity#requestPermissions
+			// here to request the missing permissions, and then overriding
+			//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+			//                                          int[] grantResults)
+			// to handle the case where the user grants the permission. See the documentation
+			// for Activity#requestPermissions for more details.
+			return;
+		}
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 	

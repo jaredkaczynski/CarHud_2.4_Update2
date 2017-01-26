@@ -6,7 +6,6 @@ import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class CarHudNotificationListenerService extends NotificationListenerService
 {
     @Override

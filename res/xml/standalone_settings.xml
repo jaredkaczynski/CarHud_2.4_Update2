@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="standaloneSettings" 
+        android:title="Standalone Settings">
+        <ListPreference
+			android:title="Speed Type"
+			android:summary="Type of speed Data."
+			android:key="speedType"
+			android:entries="@array/speedTypeList"
+			android:defaultValue="1"
+			android:entryValues="@array/speedTypeListValues" />
+        <PreferenceScreen
+            android:key="gpssettings"
+            android:title="GPS SETTINGS" >
+	        <CheckBoxPreference
+				android:title="Mock GPS"
+				android:summary="Enable Mock GPS"
+				android:key="mockGPS"
+				android:defaultValue="false" />
+   	        <CheckBoxPreference
+				android:title="Altitude"
+				android:summary="Show Altitude"
+				android:key="showAltitude"
+				android:defaultValue="false" />
+	        <CheckBoxPreference
+				android:title="Time"
+				android:summary="Show Local Time"
+				android:key="showTime"
+				android:defaultValue="false" />
+	        <CheckBoxPreference
+				android:title="Temp"
+				android:summary="Show Local Temp"
+				android:key="showLocalTemp"
+				android:defaultValue="false" />
+	    </PreferenceScreen>
+        <PreferenceScreen
+            android:key="obd2settings"
+            android:title="OBD II SETTINGS" >
+	        <ListPreference
+			    android:title="OBD II Paired Bluetooth Device"
+			    android:summary="Select the OBD II device to connect to"
+			    android:key="obdBtaddress"
+			    android:defaultValue="" />
+	        <CheckBoxPreference
+				android:title="Rpm Text"
+				android:summary="Show RPM Text"
+				android:key="showRPM"
+				android:defaultValue="true" />
+	        <CheckBoxPreference
+				android:title="RPM Bar"
+				android:summary="Show RPM bar"
+				android:key="showRPMBar"
+				android:defaultValue="true" />
+	        <CheckBoxPreference
+				android:title="Coolant Temp"
+				android:summary="Show Coolant Temp"
+				android:key="showTemp"
+				android:defaultValue="true" />
+	    </PreferenceScreen>
+        <PreferenceScreen
+            android:key="cobrasettings"
+            android:title="Cobra iRadar SETTINGS" >
+	        <CheckBoxPreference
+				android:title="Cobra iRadar"
+				android:summary="Connect to Cobra iRadar Device"
+				android:key="useCobra"
+				android:defaultValue="false" />
+	        <ListPreference
+			    android:title="iRadar Paired Bluetooth Device"
+			    android:summary="Select the Cobra iRadar device to connect to"
+			    android:key="cobraBtaddress"
+			    android:defaultValue="" />
+	        <CheckBoxPreference
+				android:title="Battery"
+				android:summary="Show Battery Voltage"
+				android:key="showBat"
+				android:defaultValue="true" />
+	    </PreferenceScreen>
+        <CheckBoxPreference
+			android:title="Metric Values"
+			android:summary="Use metric values in application"
+			android:key="useMetric"
+			android:defaultValue="false" />
+		<com.chiralcode.colorpicker.ColorPickerPreference
+    		android:defaultValue="0xFF33B5E5"
+    		android:key="dataColor"
+    		android:title="Color"
+    		android:summary="Color of HUD display." />
+		<CheckBoxPreference
+			android:title="Mirror Display"
+			android:summary="Mirror the screen in HUD Mode"
+			android:key="mirror"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:title="Set Full Brightness"
+			android:summary="Set screen brightness to full when running"
+			android:key="fullBright"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:title="Keep Screen On"
+			android:summary="Keep screen on when running"
+			android:key="screenOn"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:title="Full Screen"
+			android:summary="Run full screen"
+			android:key="fullscreen"
+			android:defaultValue="true" />
+	</PreferenceCategory>
+</PreferenceScreen>

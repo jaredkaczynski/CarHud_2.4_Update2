@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListPreference
+		android:title="Setup Type"
+		android:summary="Choose the setup type for this device"
+		android:key="setupType"
+		android:entries="@array/setupTypeList"
+		android:defaultValue="1"
+		android:entryValues="@array/setupTypeListValues" />
+</PreferenceScreen>

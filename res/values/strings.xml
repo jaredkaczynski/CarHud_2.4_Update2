@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--  APPLICATION ITEMS -->
+    <string name="app_name">CarHud</string>
+    
+    <!--   MENU ITEMS  -->
+    <string name="menu_runtype">Run Type</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_exit">Exit</string>
+
+    <!--  HUD DISPLAY ITEMS  -->
+    <string name="artist">Artist: </string>
+    <string name="album">Album: </string>
+    <string name="track">Track: </string>
+    <string name="cobraConnectionTitle">Cobra:</string>
+    <string name="obdConnectionTitle">Obd2:</string>
+    <string name="senderConnectionTitle">Sender:</string>
+    <string name="batteryTitle">Battery:</string>
+    <string name="altitudeTitle">Altitude:</string>
+    <string name="timeTitle">Time:</string>      
+    <string name="localtempTitle">Temp:</string>      
+    <string name="rpmTitle">RPM:</string>
+    <string name="coolantTitle">Coolant:</string>
+    <string name="rpmTextLabel">RPM</string>
+    <string name="navigationIcon">Navigation</string>
+    
+    <!--  BUTTONS  -->
+    <string name="start_service">Start Service</string>
+    <string name="stop_service">Stop Service</string>
+
+    <!--  APP ITEMS -->
+    <string name="not_configured">CarHud is not configured, please run settings.</string>
+    <string name="service_running">Carhud service running.</string>
+    <string name="service_stopped">Carhud service stopped.</string>
+    <string name="service_starting">Carhud service starting.</string>
+    <string name="bt_not_available">Bluetooth is not available.</string>
+	<string name="gps_not_available">GPS is not available.</string>
+    <string name="no_btdevice">Bluetooth device is not set.</string>
+    <string name="mockgps_not_available">Mock GPS is not enabled in system settings.</string>
+    <string name="connected">CONNECTED</string>
+    <string name="connecting">CONNECTING</string>
+    <string name="not_connected">NOT CONNECTED</string>
+    <string name="connection_failed">CONNECTION FAILED</string>
+    <string name="connected_to">Connected to: </string>
+    <string name="gpsoff">GPS Not Activated</string>
+    <string name="enablegps">Please enable GPS before continuing.</string>
+    <string name="ok">OK</string>
+
+</resources>

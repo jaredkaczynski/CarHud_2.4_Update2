@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  Settings Arrays -->
+	 	<string-array name="setupTypeList">
+		    <item>Standalone (Single Device)</item>
+		    <item>HUD Display (Receiver)</item>
+		    <item>Media Device (Sender)</item>
+		</string-array>
+		<string-array name="setupTypeListValues">
+		    <item>1</item>
+		    <item>2</item>
+		    <item>3</item>
+		</string-array>
+	 	<string-array name="speedTypeList">
+		    <item>GPS</item>
+		    <item>OBD II</item>
+		</string-array>
+		<string-array name="speedTypeListValues">
+		    <item>gps</item>
+		    <item>obd</item>
+		</string-array>
+		<string-array name="speedTypeListReceiver">
+		    <item>GPS</item>
+		    <item>OBD II</item>
+		    <item>GPS From Sender</item>
+		</string-array>
+		<string-array name="speedTypeListValuesReceiver">
+		    <item>gps</item>
+		    <item>obd</item>
+		    <item>gpssender</item>
+		</string-array>				
+		
+</resources>

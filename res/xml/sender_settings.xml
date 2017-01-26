@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="senderSettings" 
+        android:title="Sender Settings">     
+		<ListPreference
+		    android:title="HUD Paired Bluetooth Device"
+		    android:summary="Select the HUD device to connect"
+		    android:key="btaddress"
+		    android:defaultValue="" />
+		<CheckBoxPreference
+			android:title="Intercept Navigation"
+			android:summary="Intercept and display google navigation"
+			android:key="interceptNav"
+			android:defaultValue="false" />
+		<CheckBoxPreference
+			android:title="Send GPS Data"
+			android:summary="Send GPS data to receiver"
+			android:key="sendGPSdata"
+			android:defaultValue="false" />
+	    <CheckBoxPreference
+			android:title="Mock GPS"
+			android:summary="Enable Mock GPS"
+			android:key="mockGPSsender"
+			android:defaultValue="false" />
+	</PreferenceCategory>
+</PreferenceScreen>

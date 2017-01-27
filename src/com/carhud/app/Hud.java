@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,6 +44,7 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.telephony.SmsMessage;
@@ -87,49 +89,48 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class Hud extends ActionBarActivity
-{
-	private static final String TAG = "com.carhud.app.hud";
+public class Hud extends ActionBarActivity {
+    private static final String TAG = "com.carhud.app.hud";
     private static final boolean D = true;
 
-	private static final int RESULT_SETTINGS = 1;
-	private static final int RESULT_ENABLE_GPS = 2;
-	private static final int RESULT_ENABLE_BLUETOOTH = 3;
+    private static final int RESULT_SETTINGS = 1;
+    private static final int RESULT_ENABLE_GPS = 2;
+    private static final int RESULT_ENABLE_BLUETOOTH = 3;
 
-	public static final int MESSAGE_STATE_CHANGE = 4;
-	public static final int MESSAGE_DEVICE_NAME = 5;
-	public static final int MESSAGE_READ = 6;
+    public static final int MESSAGE_STATE_CHANGE = 4;
+    public static final int MESSAGE_DEVICE_NAME = 5;
+    public static final int MESSAGE_READ = 6;
     public static final int MESSAGE_WRITE = 7;
-	public static final int MESSAGE_TOAST = 8;
-	public static final int MESSAGE_CONNECTION_LOST = 9;
-	public static final String DEVICE_NAME = "device_name";
-	public static final String TOAST = "toast";
-	Button stopButton, startButton, closePopUp;
+    public static final int MESSAGE_TOAST = 8;
+    public static final int MESSAGE_CONNECTION_LOST = 9;
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
+    Button stopButton, startButton, closePopUp;
 
-	private BroadcastReceiver mediaReceiver;
-	SharedPreferences sharedPrefs;
+    private BroadcastReceiver mediaReceiver;
+    SharedPreferences sharedPrefs;
 
-	Boolean mirror, serviceStarted, fullBright, screenOn, activityStarted, useCobra, useMetric, popupShown = false, topPopupShown = false;
-	Boolean showBat, showTemp, showRPM, showRPMBar, fullscreen, showAltitude, showLocalTemp, showTime, mockGPS;
-	Boolean obdRestarting = false, cobraRestarting = false;
-	Boolean senderConnected = false, cobraConnected = false, obdConnected = false, navigationShown = false, navigationCloseAlert = false, tempMediaShown = false;
-	Boolean senderNeeded = false, cobraNeeded = false, obdNeeded = false, statusHiding = false, statusShown = false;
+    Boolean mirror, serviceStarted, fullBright, screenOn, activityStarted, useCobra, useMetric, popupShown = false, topPopupShown = false;
+    Boolean showBat, showTemp, showRPM, showRPMBar, fullscreen, showAltitude, showLocalTemp, showTime, mockGPS;
+    Boolean obdRestarting = false, cobraRestarting = false;
+    Boolean senderConnected = false, cobraConnected = false, obdConnected = false, navigationShown = false, navigationCloseAlert = false, tempMediaShown = false;
+    Boolean senderNeeded = false, cobraNeeded = false, obdNeeded = false, statusHiding = false, statusShown = false;
 
-	int setupType, animationOn, densityModifier, artistStart, albumStart, trackStart, statusHeight, dataColor;
-	float artistWidth, albumWidth, trackWidth, screenDensity;
-	String speedType, btaddress, obdBtaddress, cobraBtaddress, currentTime;
-	double screenWidth, lat, lon;
-	double currentSpeed, currentAltitude;
-	private LocationManager locationManager;
-	private LocationListener locationListener;
+    int setupType, animationOn, densityModifier, artistStart, albumStart, trackStart, statusHeight, dataColor;
+    float artistWidth, albumWidth, trackWidth, screenDensity;
+    String speedType, btaddress, obdBtaddress, cobraBtaddress, currentTime;
+    double screenWidth, lat, lon;
+    double currentSpeed, currentAltitude;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
-	private Handler handler = new Handler();
-	private Handler aHandler = new Handler();
-	private Handler statusViewHandler = new Handler();
-	private Handler mediaViewHandler = new Handler();
-	private Runnable messageRun;
+    private Handler handler = new Handler();
+    private Handler aHandler = new Handler();
+    private Handler statusViewHandler = new Handler();
+    private Handler mediaViewHandler = new Handler();
+    private Runnable messageRun;
     LinkedList<String> obdQueue = new LinkedList<String>();
-	private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothAdapter mBluetoothAdapter = null;
     private BluetoothChatServiceReceiver mChatService = null;
     private CobraBluetoothChatService cChatService = null;
     private ObdBluetoothChatService oChatService = null;
@@ -148,165 +149,151 @@ public class Hud extends ActionBarActivity
     private AdView adView;
     ActionBar ab;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		if (D) Log.d(TAG, "onCreate()");
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        if (D) Log.d(TAG, "onCreate()");
+        super.onCreate(savedInstanceState);
 //		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    	CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-    	cha.setActivityRunning(true);
-    	activityStarted = cha.getActivityRunning();
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        cha.setActivityRunning(true);
+        activityStarted = cha.getActivityRunning();
 
-    	ab = getSupportActionBar();
-    	ab.setTitle("");
-	}
+        ab = getSupportActionBar();
+        ab.setTitle("");
+    }
 
-	//SET DISPLAY AND COLOR
-	public void initDisplay()
-	{
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
+    //SET DISPLAY AND COLOR
+    public void initDisplay() {
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
 
-		//SPEEDOMETER AND MEDIA (CONSTANTS)
-		TextView speedText = (TextView) findViewById(R.id.speedText);
-		speedText.setTextColor(dataColor);
-		TextView artistText = (TextView) findViewById(R.id.artistText);
-		artistText.setTextColor(dataColor);
-		setColorImage("artist","artistTitle");
-		TextView albumText = (TextView) findViewById(R.id.albumText);
-		albumText.setTextColor(dataColor);
-		setColorImage("album","albumTitle");
-		TextView trackText = (TextView) findViewById(R.id.trackText);
-		trackText.setTextColor(dataColor);
-		setColorImage("track","trackTitle");
+        //SPEEDOMETER AND MEDIA (CONSTANTS)
+        TextView speedText = (TextView) findViewById(R.id.speedText);
+        speedText.setTextColor(dataColor);
+        TextView artistText = (TextView) findViewById(R.id.artistText);
+        artistText.setTextColor(dataColor);
+        setColorImage("artist", "artistTitle");
+        TextView albumText = (TextView) findViewById(R.id.albumText);
+        albumText.setTextColor(dataColor);
+        setColorImage("album", "albumTitle");
+        TextView trackText = (TextView) findViewById(R.id.trackText);
+        trackText.setTextColor(dataColor);
+        setColorImage("track", "trackTitle");
 
-		//GLOBAL OPTIONS
-		showAltitude = sharedPrefs.getBoolean("showAltitude", false);
-		if (showAltitude)
-		{
-			LinearLayout altitudelayout = (LinearLayout) findViewById(R.id.altitudelayout);
-			altitudelayout.setVisibility(View.VISIBLE);
-			TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
-			altitudeText.setTextColor(dataColor);
-			setColorImage("altitude","altitudeTitle");
-		}
-		showTime = sharedPrefs.getBoolean("showTime", false);
-		if (showTime)
-		{
-			LinearLayout timelayout = (LinearLayout) findViewById(R.id.timelayout);
-			timelayout.setVisibility(View.VISIBLE);
-			TextView timeText = (TextView) findViewById(R.id.timeText);
-			timeText.setTextColor(dataColor);
-			setColorImage("time","timeTitle");
-		}
-		showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
-		if (showLocalTemp)
-		{
-			LinearLayout localtemplayout = (LinearLayout) findViewById(R.id.localtemplayout);
-			localtemplayout.setVisibility(View.VISIBLE);
-			TextView localtempText = (TextView) findViewById(R.id.localtempText);
-			localtempText.setTextColor(dataColor);
-			setColorImage("temp","localtempTitle");
-		}
-		//OBD2 OPTIONS
-		speedType = sharedPrefs.getString("speedType","gps");
-		if (speedType.equals("obd"))
-		{
-			TextView obdConnectionTitle = (TextView) findViewById(R.id.obdConnectionTitle);
-			obdConnectionTitle.setTextColor(dataColor);
-			findViewById(R.id.obdConnectionTitle).setVisibility(View.VISIBLE);
-			findViewById(R.id.obdConnection).setVisibility(View.VISIBLE);
+        //GLOBAL OPTIONS
+        showAltitude = sharedPrefs.getBoolean("showAltitude", false);
+        if (showAltitude) {
+            LinearLayout altitudelayout = (LinearLayout) findViewById(R.id.altitudelayout);
+            altitudelayout.setVisibility(View.VISIBLE);
+            TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
+            altitudeText.setTextColor(dataColor);
+            setColorImage("altitude", "altitudeTitle");
+        }
+        showTime = sharedPrefs.getBoolean("showTime", false);
+        if (showTime) {
+            LinearLayout timelayout = (LinearLayout) findViewById(R.id.timelayout);
+            timelayout.setVisibility(View.VISIBLE);
+            TextView timeText = (TextView) findViewById(R.id.timeText);
+            timeText.setTextColor(dataColor);
+            setColorImage("time", "timeTitle");
+        }
+        showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
+        if (showLocalTemp) {
+            LinearLayout localtemplayout = (LinearLayout) findViewById(R.id.localtemplayout);
+            localtemplayout.setVisibility(View.VISIBLE);
+            TextView localtempText = (TextView) findViewById(R.id.localtempText);
+            localtempText.setTextColor(dataColor);
+            setColorImage("temp", "localtempTitle");
+        }
+        //OBD2 OPTIONS
+        speedType = sharedPrefs.getString("speedType", "gps");
+        if (speedType.equals("obd")) {
+            TextView obdConnectionTitle = (TextView) findViewById(R.id.obdConnectionTitle);
+            obdConnectionTitle.setTextColor(dataColor);
+            findViewById(R.id.obdConnectionTitle).setVisibility(View.VISIBLE);
+            findViewById(R.id.obdConnection).setVisibility(View.VISIBLE);
 
-			showRPM = sharedPrefs.getBoolean("showRPM", true);
-			showRPMBar = sharedPrefs.getBoolean("showRPMBar", true);
+            showRPM = sharedPrefs.getBoolean("showRPM", true);
+            showRPMBar = sharedPrefs.getBoolean("showRPMBar", true);
 
-			if (showRPM || showRPMBar)
-			{
-				LinearLayout rpmtextandgaugelayout = (LinearLayout) findViewById(R.id.rpmtextandgaugelayout);
-				rpmtextandgaugelayout.setVisibility(View.VISIBLE);
-			}
+            if (showRPM || showRPMBar) {
+                LinearLayout rpmtextandgaugelayout = (LinearLayout) findViewById(R.id.rpmtextandgaugelayout);
+                rpmtextandgaugelayout.setVisibility(View.VISIBLE);
+            }
 
-			if (showRPM)
-			{
-				LinearLayout rpmtextlabellayout = (LinearLayout) findViewById(R.id.rpmtextlabellayout);
-				rpmtextlabellayout.setVisibility(View.VISIBLE);
+            if (showRPM) {
+                LinearLayout rpmtextlabellayout = (LinearLayout) findViewById(R.id.rpmtextlabellayout);
+                rpmtextlabellayout.setVisibility(View.VISIBLE);
 
-				TextView rpmText = (TextView) findViewById(R.id.rpmText);
-				rpmText.setTextColor(dataColor);
-				TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
-				rpmTextLabel.setTextColor(dataColor);
-			}
+                TextView rpmText = (TextView) findViewById(R.id.rpmText);
+                rpmText.setTextColor(dataColor);
+                TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
+                rpmTextLabel.setTextColor(dataColor);
+            }
 
-			if (showRPMBar)
-			{
-				LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
-				rpmgaugelayout.setVisibility(View.VISIBLE);
+            if (showRPMBar) {
+                LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
+                rpmgaugelayout.setVisibility(View.VISIBLE);
 
-				GaugeLinearLayout gauge = (GaugeLinearLayout) findViewById(R.id.gauge);
-				gauge.setColor(dataColor);
-			}
+                GaugeLinearLayout gauge = (GaugeLinearLayout) findViewById(R.id.gauge);
+                gauge.setColor(dataColor);
+            }
 
-			showTemp = sharedPrefs.getBoolean("showTemp", true);
-			if (showTemp)
-			{
-				TableRow coolantlayout = (TableRow) findViewById(R.id.coolantlayout);
-				coolantlayout.setVisibility(View.VISIBLE);
+            showTemp = sharedPrefs.getBoolean("showTemp", true);
+            if (showTemp) {
+                TableRow coolantlayout = (TableRow) findViewById(R.id.coolantlayout);
+                coolantlayout.setVisibility(View.VISIBLE);
 
-				setColorImage("temp","coolantTitle");
-				TextView coolantText = (TextView) findViewById(R.id.coolantText);
-				coolantText.setTextColor(dataColor);
-			}
-		}
-		//COBRA OPTIONS
-		useCobra = sharedPrefs.getBoolean("useCobra",false);
-		if (useCobra)
-		{
-			TextView cobraConnectionTitle = (TextView) findViewById(R.id.cobraConnectionTitle);
-			cobraConnectionTitle.setTextColor(dataColor);
-			findViewById(R.id.cobraConnectionTitle).setVisibility(View.VISIBLE);
-			findViewById(R.id.cobraConnection).setVisibility(View.VISIBLE);
+                setColorImage("temp", "coolantTitle");
+                TextView coolantText = (TextView) findViewById(R.id.coolantText);
+                coolantText.setTextColor(dataColor);
+            }
+        }
+        //COBRA OPTIONS
+        useCobra = sharedPrefs.getBoolean("useCobra", false);
+        if (useCobra) {
+            TextView cobraConnectionTitle = (TextView) findViewById(R.id.cobraConnectionTitle);
+            cobraConnectionTitle.setTextColor(dataColor);
+            findViewById(R.id.cobraConnectionTitle).setVisibility(View.VISIBLE);
+            findViewById(R.id.cobraConnection).setVisibility(View.VISIBLE);
 
-			showBat = sharedPrefs.getBoolean("showBat", true);
-			if (showBat)
-			{
-				LinearLayout batterylayout = (LinearLayout) findViewById(R.id.batterylayout);
-				batterylayout.setVisibility(View.VISIBLE);
-				TextView batteryText = (TextView) findViewById(R.id.batteryText);
-				batteryText.setTextColor(dataColor);
-				setColorImage("bat","batteryTitle");
-			}
-		}
-	}
+            showBat = sharedPrefs.getBoolean("showBat", true);
+            if (showBat) {
+                LinearLayout batterylayout = (LinearLayout) findViewById(R.id.batterylayout);
+                batterylayout.setVisibility(View.VISIBLE);
+                TextView batteryText = (TextView) findViewById(R.id.batteryText);
+                batteryText.setTextColor(dataColor);
+                setColorImage("bat", "batteryTitle");
+            }
+        }
+    }
 
-	// GET APP SETTINGS, RUN APPROPRIATE APP TYPE
-	public void startActivity()
-	{
-		if (D) Log.d(TAG, "startActivity()");
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		cha.setActivityRunning(true);
-		switch(setupType)
-		{
-			case 1 :
-				if (D) Log.d(TAG, "Setup type is standalone");
-				runStandAlone();
-				break;
-			case 2 : //Receiver
-				if (D) Log.d(TAG, "Setup type is receiver");
-				runReceiver();
-				break;
-			case 3 : //Sender
-				if (D) Log.d(TAG, "Setup type is sender");
-				runSender();
-				break;
-			default: //Undefined
-				if (D) Log.d(TAG, "Setup type is undefined");
-				setContentView(R.layout.hud);
+    // GET APP SETTINGS, RUN APPROPRIATE APP TYPE
+    public void startActivity() {
+        if (D) Log.d(TAG, "startActivity()");
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        cha.setActivityRunning(true);
+        switch (setupType) {
+            case 1:
+                if (D) Log.d(TAG, "Setup type is standalone");
+                runStandAlone();
+                break;
+            case 2: //Receiver
+                if (D) Log.d(TAG, "Setup type is receiver");
+                runReceiver();
+                break;
+            case 3: //Sender
+                if (D) Log.d(TAG, "Setup type is sender");
+                runSender();
+                break;
+            default: //Undefined
+                if (D) Log.d(TAG, "Setup type is undefined");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -315,174 +302,165 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-			    TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.not_configured));
-		}
-	}
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.not_configured));
+        }
+    }
 
-	//SIZE TEXTVIEW
-	public void sizeTextView(TextView tv, String measureText)
-	{
-		//SET FONT TO MATCH WIDTH
-		TextPaint textPaint = tv.getPaint();
-		float width = textPaint.measureText(measureText);
-		while (tv.getMeasuredWidth() - width > 10)
-		{
-			tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (tv.getTextSize() + 1));
-			width = textPaint.measureText(measureText);
-		}
-		//REDUCE TOP/BOTTOM PADDING TO ACCOUNT FOR FONT PADDING
+    //SIZE TEXTVIEW
+    public void sizeTextView(TextView tv, String measureText) {
+        //SET FONT TO MATCH WIDTH
+        TextPaint textPaint = tv.getPaint();
+        float width = textPaint.measureText(measureText);
+        while (tv.getMeasuredWidth() - width > 10) {
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (tv.getTextSize() + 1));
+            width = textPaint.measureText(measureText);
+        }
+        //REDUCE TOP/BOTTOM PADDING TO ACCOUNT FOR FONT PADDING
         int divFactor = (int) Math.round((textPaint.getTextSize() / this.getResources().getDisplayMetrics().density) * .20);
         int additionalPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, divFactor, this.getResources().getDisplayMetrics());
-        tv.setPadding(0, 0 - additionalPadding , 0, 0 - additionalPadding - Math.round(additionalPadding * 0.113f));
-	}
+        tv.setPadding(0, 0 - additionalPadding, 0, 0 - additionalPadding - Math.round(additionalPadding * 0.113f));
+    }
 
-	//SIZE DISPLAY
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus)
-	{
-		if (hasFocus)
-		{
-			//ONLY RUN FOR STANDALONE AND RECEIVER
-			sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-			setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
-			if (setupType != 1 && setupType != 2)
-				return;
+    //SIZE DISPLAY
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (hasFocus) {
+            //ONLY RUN FOR STANDALONE AND RECEIVER
+            sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            setupType = Integer.parseInt(sharedPrefs.getString("setupType", "0"));
+            if (setupType != 1 && setupType != 2)
+                return;
 
-			//SPEEDOMETER
-			TextView speedText = (TextView) findViewById(R.id.speedText);
-			sizeTextView(speedText, "00");
+            //SPEEDOMETER
+            TextView speedText = (TextView) findViewById(R.id.speedText);
+            sizeTextView(speedText, "00");
 
-			//GET VALUES BASED OFF SPEEDOMETER HEIGHT
-			speedText.measure(0, 0);
-			int padding = Math.round(speedText.getMeasuredHeight() * 0.085f);
-			int mediaFont = Math.round((speedText.getMeasuredHeight() * 0.16f) / this.getResources().getDisplayMetrics().density);
-			int smallerFont = Math.round(mediaFont * 0.65f);
-			int rpmBarHeight = Math.round((speedText.getMeasuredHeight() * 0.50f) / this.getResources().getDisplayMetrics().density);
+            //GET VALUES BASED OFF SPEEDOMETER HEIGHT
+            speedText.measure(0, 0);
+            int padding = Math.round(speedText.getMeasuredHeight() * 0.085f);
+            int mediaFont = Math.round((speedText.getMeasuredHeight() * 0.16f) / this.getResources().getDisplayMetrics().density);
+            int smallerFont = Math.round(mediaFont * 0.65f);
+            int rpmBarHeight = Math.round((speedText.getMeasuredHeight() * 0.50f) / this.getResources().getDisplayMetrics().density);
 
-			//RPM VIEWS
-			LinearLayout rpmtextlabellayout = (LinearLayout) findViewById(R.id.rpmtextlabellayout);
-			rpmtextlabellayout.setPadding(0, padding, 0, padding);
-			//RPM TEXT
-	        TextView rpmText = (TextView) findViewById(R.id.rpmText);
-	        sizeTextView(rpmText, "7000");
-	        //RPM LABEL
-	        TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
-	        rpmTextLabel.setTextSize(mediaFont);
+            //RPM VIEWS
+            LinearLayout rpmtextlabellayout = (LinearLayout) findViewById(R.id.rpmtextlabellayout);
+            rpmtextlabellayout.setPadding(0, padding, 0, padding);
+            //RPM TEXT
+            TextView rpmText = (TextView) findViewById(R.id.rpmText);
+            sizeTextView(rpmText, "7000");
+            //RPM LABEL
+            TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
+            rpmTextLabel.setTextSize(mediaFont);
 
-	        //RPM BAR
-	        LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
-	        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-			showRPM = sharedPrefs.getBoolean("showRPM", true);
-	        //SPECIAL CASE FOR NO RPM TEXT
-			if (!showRPM)
-			{
-				int rpmPadding = Math.round(speedText.getMeasuredHeight() * 0.05f);
-				rpmBarHeight = Math.round((speedText.getMeasuredHeight() * 0.80f) / this.getResources().getDisplayMetrics().density);
-		        rpmgaugelayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, rpmBarHeight));
-				rpmgaugelayout.setPadding(0, rpmPadding, 0, rpmPadding);
-			}
-			else
-				rpmgaugelayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, rpmBarHeight));
+            //RPM BAR
+            LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
+            sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            showRPM = sharedPrefs.getBoolean("showRPM", true);
+            //SPECIAL CASE FOR NO RPM TEXT
+            if (!showRPM) {
+                int rpmPadding = Math.round(speedText.getMeasuredHeight() * 0.05f);
+                rpmBarHeight = Math.round((speedText.getMeasuredHeight() * 0.80f) / this.getResources().getDisplayMetrics().density);
+                rpmgaugelayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, rpmBarHeight));
+                rpmgaugelayout.setPadding(0, rpmPadding, 0, rpmPadding);
+            } else
+                rpmgaugelayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, rpmBarHeight));
 
-	        //ARTIST TEXT
-	        TextView artistText = (TextView) findViewById(R.id.artistText);
-	        artistText.setTextSize(mediaFont);
-	        //ALBUM TEXT
-	        TextView albumText = (TextView) findViewById(R.id.albumText);
-	        albumText.setTextSize(mediaFont);
-	        //TRACK TEXT
-	        TextView trackText = (TextView) findViewById(R.id.trackText);
-	        trackText.setTextSize(mediaFont);
-			//GET VALUES BASED OFF ARTIST HEIGHT
-			artistText.measure(0, 0);
-	        int iconHeight = Math.round(artistText.getMeasuredHeight());
-			int padding2 = Math.round(artistText.getMeasuredHeight() * 0.18f);
-			//ARTIST ICON
-	        ImageView artistTitle = (ImageView) findViewById(R.id.artistTitle);
-	        artistTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        artistTitle.setPadding(padding2, padding2, padding2, padding2);
-			//ALBUM ICON
-	        ImageView albumTitle = (ImageView) findViewById(R.id.albumTitle);
-	        albumTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        albumTitle.setPadding(padding2, padding2, padding2, padding2);
-			//ARTIST ICON
-	        ImageView trackTitle = (ImageView) findViewById(R.id.trackTitle);
-	        trackTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        trackTitle.setPadding(padding2, padding2, padding2, padding2);
+            //ARTIST TEXT
+            TextView artistText = (TextView) findViewById(R.id.artistText);
+            artistText.setTextSize(mediaFont);
+            //ALBUM TEXT
+            TextView albumText = (TextView) findViewById(R.id.albumText);
+            albumText.setTextSize(mediaFont);
+            //TRACK TEXT
+            TextView trackText = (TextView) findViewById(R.id.trackText);
+            trackText.setTextSize(mediaFont);
+            //GET VALUES BASED OFF ARTIST HEIGHT
+            artistText.measure(0, 0);
+            int iconHeight = Math.round(artistText.getMeasuredHeight());
+            int padding2 = Math.round(artistText.getMeasuredHeight() * 0.18f);
+            //ARTIST ICON
+            ImageView artistTitle = (ImageView) findViewById(R.id.artistTitle);
+            artistTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            artistTitle.setPadding(padding2, padding2, padding2, padding2);
+            //ALBUM ICON
+            ImageView albumTitle = (ImageView) findViewById(R.id.albumTitle);
+            albumTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            albumTitle.setPadding(padding2, padding2, padding2, padding2);
+            //ARTIST ICON
+            ImageView trackTitle = (ImageView) findViewById(R.id.trackTitle);
+            trackTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            trackTitle.setPadding(padding2, padding2, padding2, padding2);
 
-	        //NAVIGATION TEXT
-	        TextView navigationText = (TextView) findViewById(R.id.navigationText);
-	        navigationText.setTextSize(mediaFont);
-			//NAVIGATION ICON
-	        ImageView navigationIcon = (ImageView) findViewById(R.id.navigationIcon);
-	        navigationIcon.setLayoutParams(new TableRow.LayoutParams(Math.round(iconHeight * 2.25f), Math.round(iconHeight * 2.25f)));
-	        navigationIcon.setPadding(padding2, padding2, padding2, padding2);
-	        //ESTIMATED ARRIVAL
-	        TextView estArrival = (TextView) findViewById(R.id.estArrival);
-	        estArrival.setTextSize(smallerFont);
-	        //EXTIMATED DISTANCE
-	        TextView estDistance = (TextView) findViewById(R.id.estDistance);
-	        estDistance.setTextSize(smallerFont);
+            //NAVIGATION TEXT
+            TextView navigationText = (TextView) findViewById(R.id.navigationText);
+            navigationText.setTextSize(mediaFont);
+            //NAVIGATION ICON
+            ImageView navigationIcon = (ImageView) findViewById(R.id.navigationIcon);
+            navigationIcon.setLayoutParams(new TableRow.LayoutParams(Math.round(iconHeight * 2.25f), Math.round(iconHeight * 2.25f)));
+            navigationIcon.setPadding(padding2, padding2, padding2, padding2);
+            //ESTIMATED ARRIVAL
+            TextView estArrival = (TextView) findViewById(R.id.estArrival);
+            estArrival.setTextSize(smallerFont);
+            //EXTIMATED DISTANCE
+            TextView estDistance = (TextView) findViewById(R.id.estDistance);
+            estDistance.setTextSize(smallerFont);
 
-	        //ALTITIDE TEXT
-	        TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
-	        altitudeText.setTextSize(mediaFont);
-	        //TEMP TEXT
-	        TextView localtempText = (TextView) findViewById(R.id.localtempText);
-	        localtempText.setTextSize(mediaFont);
-	        //TIME TEXT
-	        TextView timeText = (TextView) findViewById(R.id.timeText);
-	        timeText.setTextSize(mediaFont);
-			//ALTITUDE ICON
-	        ImageView altitudeTitle = (ImageView) findViewById(R.id.altitudeTitle);
-	        altitudeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        altitudeTitle.setPadding(padding2, padding2, padding2, padding2);
-			//TEMP ICON
-	        ImageView localtempTitle = (ImageView) findViewById(R.id.localtempTitle);
-	        localtempTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        localtempTitle.setPadding(padding2, padding2, padding2, padding2);
-			//TIME ICON
-	        ImageView timeTitle = (ImageView) findViewById(R.id.timeTitle);
-	        timeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        timeTitle.setPadding(padding2, padding2, padding2, padding2);
+            //ALTITIDE TEXT
+            TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
+            altitudeText.setTextSize(mediaFont);
+            //TEMP TEXT
+            TextView localtempText = (TextView) findViewById(R.id.localtempText);
+            localtempText.setTextSize(mediaFont);
+            //TIME TEXT
+            TextView timeText = (TextView) findViewById(R.id.timeText);
+            timeText.setTextSize(mediaFont);
+            //ALTITUDE ICON
+            ImageView altitudeTitle = (ImageView) findViewById(R.id.altitudeTitle);
+            altitudeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            altitudeTitle.setPadding(padding2, padding2, padding2, padding2);
+            //TEMP ICON
+            ImageView localtempTitle = (ImageView) findViewById(R.id.localtempTitle);
+            localtempTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            localtempTitle.setPadding(padding2, padding2, padding2, padding2);
+            //TIME ICON
+            ImageView timeTitle = (ImageView) findViewById(R.id.timeTitle);
+            timeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            timeTitle.setPadding(padding2, padding2, padding2, padding2);
 
-	        //BATTERY TEXT
-	        TextView batteryText = (TextView) findViewById(R.id.batteryText);
-	        batteryText.setTextSize(mediaFont);
-	        //COOLANT TEXT
-	        TextView coolantText = (TextView) findViewById(R.id.coolantText);
-	        coolantText.setTextSize(mediaFont);
-			//BATTERY ICON
-	        ImageView batteryTitle = (ImageView) findViewById(R.id.batteryTitle);
-	        batteryTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        batteryTitle.setPadding(padding2, padding2, padding2, padding2);
-			//COOLANT ICON
-	        ImageView coolantTitle = (ImageView) findViewById(R.id.coolantTitle);
-	        coolantTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
-	        coolantTitle.setPadding(padding2, padding2, padding2, padding2);
-	        super.onWindowFocusChanged(hasFocus);
-		}
-	}
+            //BATTERY TEXT
+            TextView batteryText = (TextView) findViewById(R.id.batteryText);
+            batteryText.setTextSize(mediaFont);
+            //COOLANT TEXT
+            TextView coolantText = (TextView) findViewById(R.id.coolantText);
+            coolantText.setTextSize(mediaFont);
+            //BATTERY ICON
+            ImageView batteryTitle = (ImageView) findViewById(R.id.batteryTitle);
+            batteryTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            batteryTitle.setPadding(padding2, padding2, padding2, padding2);
+            //COOLANT ICON
+            ImageView coolantTitle = (ImageView) findViewById(R.id.coolantTitle);
+            coolantTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));
+            coolantTitle.setPadding(padding2, padding2, padding2, padding2);
+            super.onWindowFocusChanged(hasFocus);
+        }
+    }
 
-	// STANDALONE TYPE
-	public void runStandAlone()
-	{
-		if (D) Log.d(TAG, "Running as standalone");
+    // STANDALONE TYPE
+    public void runStandAlone() {
+        if (D) Log.d(TAG, "Running as standalone");
 
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		//CHECK REQUIREMENTS
-		speedType = sharedPrefs.getString("speedType","gps");
-		if (speedType.equals("obd"))
-		{
-			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
-			if (obdBtaddress.isEmpty())
-			{
-				if (D) Log.d(TAG, "No obd address");
-				setContentView(R.layout.hud);
+        //CHECK REQUIREMENTS
+        speedType = sharedPrefs.getString("speedType", "gps");
+        if (speedType.equals("obd")) {
+            obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
+            if (obdBtaddress.isEmpty()) {
+                if (D) Log.d(TAG, "No obd address");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -491,21 +469,19 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-				TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.not_configured));
-				return;
-			}
-		}
-		useCobra = sharedPrefs.getBoolean("useCobra",false);
-		if (useCobra)
-		{
-			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
-			if (cobraBtaddress.isEmpty())
-			{
-				if (D) Log.d(TAG, "No cobra address");
-				setContentView(R.layout.hud);
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.not_configured));
+                return;
+            }
+        }
+        useCobra = sharedPrefs.getBoolean("useCobra", false);
+        if (useCobra) {
+            cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
+            if (cobraBtaddress.isEmpty()) {
+                if (D) Log.d(TAG, "No cobra address");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -514,20 +490,18 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-				TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.not_configured));
-				return;
-			}
-		}
-		if (speedType.equals("obd") || useCobra)
-		{
-	        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-	        if (mBluetoothAdapter == null)
-	        {
-				if (D) Log.d(TAG, "No bluetooth device");
-				setContentView(R.layout.hud);
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.not_configured));
+                return;
+            }
+        }
+        if (speedType.equals("obd") || useCobra) {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter == null) {
+                if (D) Log.d(TAG, "No bluetooth device");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -536,106 +510,96 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-				TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.bt_not_available));
-	            return;
-	        }
-		}
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.bt_not_available));
+                return;
+            }
+        }
 
-		fullBright = sharedPrefs.getBoolean("fullBright", false);
-		if (fullBright)
-		{
-			WindowManager.LayoutParams lp = getWindow().getAttributes();
-			lp.screenBrightness = 1.0f;
-		}
-		screenOn = sharedPrefs.getBoolean("screenOn", false);
-		if (screenOn)
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		else
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        fullBright = sharedPrefs.getBoolean("fullBright", false);
+        if (fullBright) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.screenBrightness = 1.0f;
+        }
+        screenOn = sharedPrefs.getBoolean("screenOn", false);
+        if (screenOn)
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		fullscreen = sharedPrefs.getBoolean("fullscreen", true);
-		if (fullscreen)
-		{
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		}
-		else
-		{
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
-	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        fullscreen = sharedPrefs.getBoolean("fullscreen", true);
+        if (fullscreen) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-	    //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		mirror = sharedPrefs.getBoolean("mirror", false);
-		if (mirror)
-			setContentView(R.layout.hud_display_mirror);
-	    else
-	    	setContentView(R.layout.hud_display);
+        //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mirror = sharedPrefs.getBoolean("mirror", false);
+        if (mirror)
+            setContentView(R.layout.hud_display_mirror);
+        else
+            setContentView(R.layout.hud_display);
 
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		screenWidth = size.x;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
 
-		initDisplay();
+        initDisplay();
 
-		speedType = sharedPrefs.getString("speedType","gps");
-		showAltitude = sharedPrefs.getBoolean("showAltitude", false);
-		showTime = sharedPrefs.getBoolean("showTime", false);
-		showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
-		//GET SPEED DATA
-		if (speedType.equals("gps") || showAltitude || showTime || showLocalTemp)
-			getGPSdata();
-		if (speedType.equals("obd"))
-		{
-			obdNeeded = true;
-			startBluetoothOBD2();
-		}
+        speedType = sharedPrefs.getString("speedType", "gps");
+        showAltitude = sharedPrefs.getBoolean("showAltitude", false);
+        showTime = sharedPrefs.getBoolean("showTime", false);
+        showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
+        //GET SPEED DATA
+        if (speedType.equals("gps") || showAltitude || showTime || showLocalTemp)
+            getGPSdata();
+        if (speedType.equals("obd")) {
+            obdNeeded = true;
+            startBluetoothOBD2();
+        }
 
-		//REGISTER MEDIA METADATA RECEIVER
-		if (mediaReceiver == null)
-		{
-			mediaReceiver = new MediaReceiver();
-			IntentFilter filter = new IntentFilter();
-			filter.addAction("com.android.music.metachanged");
-			filter.addAction("com.android.music.playstatechanged");
-			filter.addAction("com.android.music.playbackcomplete");
-			filter.addAction("com.android.music.queuechanged");
-			filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-			filter.addAction(PowerampAPI.ACTION_TRACK_CHANGED);
-			registerReceiver(mediaReceiver, filter);
-		}
+        //REGISTER MEDIA METADATA RECEIVER
+        if (mediaReceiver == null) {
+            mediaReceiver = new MediaReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("com.android.music.metachanged");
+            filter.addAction("com.android.music.playstatechanged");
+            filter.addAction("com.android.music.playbackcomplete");
+            filter.addAction("com.android.music.queuechanged");
+            filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+            filter.addAction(PowerampAPI.ACTION_TRACK_CHANGED);
+            registerReceiver(mediaReceiver, filter);
+        }
 
-		//START COBRA IRADAR
-		useCobra = sharedPrefs.getBoolean("useCobra",false);
-		if (useCobra)
-		{
-			cobraNeeded = true;
-			startCobraIradar();
-		}
-	}
+        //START COBRA IRADAR
+        useCobra = sharedPrefs.getBoolean("useCobra", false);
+        if (useCobra) {
+            cobraNeeded = true;
+            startCobraIradar();
+        }
+    }
 
-	// RECEIVER TYPE
-	public void runReceiver()
-	{
-		if (D) Log.d(TAG, "Running as receiver");
+    // RECEIVER TYPE
+    public void runReceiver() {
+        if (D) Log.d(TAG, "Running as receiver");
 
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		//CHECK REQUIREMENTS
-		speedType = sharedPrefs.getString("speedType","gps");
-		if (speedType.equals("obd"))
-		{
-			obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
-			if (obdBtaddress.isEmpty())
-			{
-				if (D) Log.d(TAG, "No obd address");
-				setContentView(R.layout.hud);
+        //CHECK REQUIREMENTS
+        speedType = sharedPrefs.getString("speedType", "gps");
+        if (speedType.equals("obd")) {
+            obdBtaddress = sharedPrefs.getString("obdBtaddress", "");
+            if (obdBtaddress.isEmpty()) {
+                if (D) Log.d(TAG, "No obd address");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -644,21 +608,19 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-				TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.not_configured));
-				return;
-			}
-		}
-		useCobra = sharedPrefs.getBoolean("useCobra",false);
-		if (useCobra)
-		{
-			cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
-			if (cobraBtaddress.isEmpty())
-			{
-				if (D) Log.d(TAG, "No cobra address");
-				setContentView(R.layout.hud);
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.not_configured));
+                return;
+            }
+        }
+        useCobra = sharedPrefs.getBoolean("useCobra", false);
+        if (useCobra) {
+            cobraBtaddress = sharedPrefs.getString("cobraBtaddress", "");
+            if (cobraBtaddress.isEmpty()) {
+                if (D) Log.d(TAG, "No cobra address");
+                setContentView(R.layout.hud);
 
-				//SHOW AD
+                //SHOW AD
 				/*adView = new AdView(this);
 			    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 			    adView.setAdSize(AdSize.BANNER);
@@ -667,18 +629,17 @@ public class Hud extends ActionBarActivity
 			    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 			    adView.loadAd(adRequest);*/
 
-				TextView mainText = (TextView) findViewById(R.id.mainText);
-				mainText.setText(getString(R.string.not_configured));
-				return;
-			}
-		}
+                TextView mainText = (TextView) findViewById(R.id.mainText);
+                mainText.setText(getString(R.string.not_configured));
+                return;
+            }
+        }
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter == null)
-        {
-			if (D) Log.d(TAG, "No bluetooth device");
-			setContentView(R.layout.hud);
+        if (mBluetoothAdapter == null) {
+            if (D) Log.d(TAG, "No bluetooth device");
+            setContentView(R.layout.hud);
 
-			//SHOW AD
+            //SHOW AD
 			/*adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 		    adView.setAdSize(AdSize.BANNER);
@@ -687,150 +648,131 @@ public class Hud extends ActionBarActivity
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 		    adView.loadAd(adRequest);*/
 
-			TextView mainText = (TextView) findViewById(R.id.mainText);
-			mainText.setText(getString(R.string.bt_not_available));
+            TextView mainText = (TextView) findViewById(R.id.mainText);
+            mainText.setText(getString(R.string.bt_not_available));
             return;
         }
 
-		fullBright = sharedPrefs.getBoolean("fullBright", false);
-		if (fullBright)
-		{
-			WindowManager.LayoutParams lp = getWindow().getAttributes();
-			lp.screenBrightness = 1.0f;
-		}
-		screenOn = sharedPrefs.getBoolean("screenOn", false);
-		if (screenOn)
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		else
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        fullBright = sharedPrefs.getBoolean("fullBright", false);
+        if (fullBright) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.screenBrightness = 1.0f;
+        }
+        screenOn = sharedPrefs.getBoolean("screenOn", false);
+        if (screenOn)
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        else
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		fullscreen = sharedPrefs.getBoolean("fullscreen", true);
-		if (fullscreen)
-		{
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		}
-		else
-		{
-			getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		}
-	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        fullscreen = sharedPrefs.getBoolean("fullscreen", true);
+        if (fullscreen) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-		senderNeeded = true;
-		BluetoothAdapter.getDefaultAdapter().enable();
-	    //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		mirror = sharedPrefs.getBoolean("mirror", false);
-		if (mirror)
-			setContentView(R.layout.hud_display_mirror);
-	    else
-	    	setContentView(R.layout.hud_display);
+        senderNeeded = true;
+        BluetoothAdapter.getDefaultAdapter().enable();
+        //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mirror = sharedPrefs.getBoolean("mirror", false);
+        if (mirror)
+            setContentView(R.layout.hud_display_mirror);
+        else
+            setContentView(R.layout.hud_display);
 
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		screenWidth = size.x;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
 
-		initDisplay();
+        initDisplay();
 
-        if (!mBluetoothAdapter.isEnabled())
-        {
+        if (!mBluetoothAdapter.isEnabled()) {
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, RESULT_ENABLE_BLUETOOTH);
-        }
-        else
-        {
-			TextView senderConnectionTitle = (TextView) findViewById(R.id.senderConnectionTitle);
-			senderConnectionTitle.setTextColor(dataColor);
-    		findViewById(R.id.senderConnectionTitle).setVisibility(View.VISIBLE);
-    		findViewById(R.id.senderConnection).setVisibility(View.VISIBLE);
+        } else {
+            TextView senderConnectionTitle = (TextView) findViewById(R.id.senderConnectionTitle);
+            senderConnectionTitle.setTextColor(dataColor);
+            findViewById(R.id.senderConnectionTitle).setVisibility(View.VISIBLE);
+            findViewById(R.id.senderConnection).setVisibility(View.VISIBLE);
             if (mChatService == null)
                 mChatService = new BluetoothChatServiceReceiver(this, mHandler);
             mChatService.start();
-		}
+        }
 
-        speedType = sharedPrefs.getString("speedType","gps");
-		showAltitude = sharedPrefs.getBoolean("showAltitude", false);
-		showTime = sharedPrefs.getBoolean("showTime", false);
-		showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
-		//GET SPEED DATA
-		if ((speedType.equals("gps") || showAltitude || showTime || showLocalTemp) && (!speedType.equals("gpssender")))
-			getGPSdata();
-		if (speedType.equals("gpssender") && showLocalTemp)
-			localTempThread.start();
-		if (speedType.equals("obd"))
-		{
-			obdNeeded = true;
-			startBluetoothOBD2();
-		}
-		//START COBRA IRADAR
-		useCobra = sharedPrefs.getBoolean("useCobra",false);
-		if (useCobra)
-		{
-			cobraNeeded = true;
-			startCobraIradar();
-		}
-	}
+        speedType = sharedPrefs.getString("speedType", "gps");
+        showAltitude = sharedPrefs.getBoolean("showAltitude", false);
+        showTime = sharedPrefs.getBoolean("showTime", false);
+        showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
+        //GET SPEED DATA
+        if ((speedType.equals("gps") || showAltitude || showTime || showLocalTemp) && (!speedType.equals("gpssender")))
+            getGPSdata();
+        if (speedType.equals("gpssender") && showLocalTemp)
+            localTempThread.start();
+        if (speedType.equals("obd")) {
+            obdNeeded = true;
+            startBluetoothOBD2();
+        }
+        //START COBRA IRADAR
+        useCobra = sharedPrefs.getBoolean("useCobra", false);
+        if (useCobra) {
+            cobraNeeded = true;
+            startCobraIradar();
+        }
+    }
 
-	// SENDER TYPE
-	public void runSender()
-	{
-		if (D) Log.d(TAG, "Running as sender");
+    // SENDER TYPE
+    public void runSender() {
+        if (D) Log.d(TAG, "Running as sender");
 
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-	    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
-    	sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-    	Boolean skipNotificationWarning = sharedPrefs.getBoolean("skipNotificationWarning", false);
-    	if(!skipNotificationWarning)
-    	{
-    		final CharSequence[] items = {"Don't show this again"};
-    		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-    		dlgAlert.setTitle("Be sure notification access is set under security!");
-    		dlgAlert.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener()
-    		{
-    			@Override
-                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked)
-    			{
-                    if (isChecked)
-                    {
-        	    		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        	    		SharedPreferences.Editor editor = sharedPrefs.edit();
-        	    		editor.putBoolean("skipNotificationWarning", true);
-        	    		editor.commit();
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean skipNotificationWarning = sharedPrefs.getBoolean("skipNotificationWarning", false);
+        if (!skipNotificationWarning) {
+            final CharSequence[] items = {"Don't show this again"};
+            AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+            dlgAlert.setTitle("Be sure notification access is set under security!");
+            dlgAlert.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                    if (isChecked) {
+                        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putBoolean("skipNotificationWarning", true);
+                        editor.commit();
+                    } else {
+                        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = sharedPrefs.edit();
+                        editor.putBoolean("skipNotificationWarning", false);
+                        editor.commit();
                     }
-                    else
-                    {
-        	    		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        	    		SharedPreferences.Editor editor = sharedPrefs.edit();
-        	    		editor.putBoolean("skipNotificationWarning", false);
-        	    		editor.commit();
-                    }
-    			}
-    		});
-    		dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener()
-    		{
-    			@Override
-				public void onClick(DialogInterface dialog, int which)
-    			{
-					dialog.dismiss();
-    			}
-    		});
-    		dlgAlert.setCancelable(true);
-    		dlgAlert.create().show();
-    	}
+                }
+            });
+            dlgAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dlgAlert.setCancelable(true);
+            dlgAlert.create().show();
+        }
 
-	    BluetoothAdapter.getDefaultAdapter().enable();
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		btaddress = sharedPrefs.getString("btaddress", "");
-		if (btaddress.isEmpty())
-		{
-			setContentView(R.layout.hud);
+        BluetoothAdapter.getDefaultAdapter().enable();
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        btaddress = sharedPrefs.getString("btaddress", "");
+        if (btaddress.isEmpty()) {
+            setContentView(R.layout.hud);
 
-			//SHOW AD
+            //SHOW AD
 			/*adView = new AdView(this);
 		    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 		    adView.setAdSize(AdSize.BANNER);
@@ -839,13 +781,13 @@ public class Hud extends ActionBarActivity
 		    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 		    adView.loadAd(adRequest);*/
 
-			TextView mainText = (TextView) findViewById(R.id.mainText);
-			mainText.setText(getString(R.string.not_configured));
-			return;
-		}
-		setContentView(R.layout.sender);
+            TextView mainText = (TextView) findViewById(R.id.mainText);
+            mainText.setText(getString(R.string.not_configured));
+            return;
+        }
+        setContentView(R.layout.sender);
 
-		//SHOW AD
+        //SHOW AD
 		/*adView = new AdView(this);
 	    adView.setAdUnitId("ca-app-pub-2765181867665979/8238067247");
 	    adView.setAdSize(AdSize.BANNER);
@@ -854,503 +796,446 @@ public class Hud extends ActionBarActivity
 	    AdRequest adRequest = new AdRequest.Builder().addTestDevice("224F611EDD5189F758EA83EF1E855F1C").build();
 	    adView.loadAd(adRequest);*/
 
-		TextView senderText = (TextView) findViewById(R.id.senderText);
-		TextView errorText = (TextView) findViewById(R.id.errorText);
+        TextView senderText = (TextView) findViewById(R.id.senderText);
+        TextView errorText = (TextView) findViewById(R.id.errorText);
 
-		stopButton = (Button) findViewById(R.id.stop_button);
-		startButton = (Button) findViewById(R.id.start_button);
+        stopButton = (Button) findViewById(R.id.stop_button);
+        startButton = (Button) findViewById(R.id.start_button);
 
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		serviceStarted = cha.getServiceRunning();
-		if (serviceStarted == true)
-		{
-			startButton.setBackgroundColor(Color.parseColor("#706168"));
-			startButton.setClickable(false);
-			stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
-			stopButton.setClickable(true);
-			CarHudSenderService.setMainActivity(this);
-			senderText.setText(cha.getlastMessage());
-			errorText.setText(cha.getlastError());
-		}
-		else
-		{
-		    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		    if (mBluetoothAdapter.isEnabled())
-		    {
-		    	startService();
-		    	senderText.setText(getString(R.string.service_starting));
-		    	cha.setLastMessage(getString(R.string.service_starting));
-		    }
-		    else
-		    {
-				startButton.setBackgroundColor(Color.parseColor("#00F700"));
-				startButton.setClickable(true);
-				stopButton.setBackgroundColor(Color.parseColor("#706168"));
-				stopButton.setClickable(false);
-		    	errorText.setText(getString(R.string.bt_not_available));
-		    	cha.setLastError(getString(R.string.bt_not_available));
-		    }
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        serviceStarted = cha.getServiceRunning();
+        if (serviceStarted == true) {
+            startButton.setBackgroundColor(Color.parseColor("#706168"));
+            startButton.setClickable(false);
+            stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
+            stopButton.setClickable(true);
+            CarHudSenderService.setMainActivity(this);
+            senderText.setText(cha.getlastMessage());
+            errorText.setText(cha.getlastError());
+        } else {
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (mBluetoothAdapter.isEnabled()) {
+                startService();
+                senderText.setText(getString(R.string.service_starting));
+                cha.setLastMessage(getString(R.string.service_starting));
+            } else {
+                startButton.setBackgroundColor(Color.parseColor("#00F700"));
+                startButton.setClickable(true);
+                stopButton.setBackgroundColor(Color.parseColor("#706168"));
+                stopButton.setClickable(false);
+                errorText.setText(getString(R.string.bt_not_available));
+                cha.setLastError(getString(R.string.bt_not_available));
+            }
 
-		}
+        }
 
-		//SERVICE BUTTONS
-	     stopButton.setOnClickListener(new View.OnClickListener()
-	     {
-	         @Override
-			public void onClick(View v)
-	         {
-	 			CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-	        	cha.setServiceRunning(false);
-	        	stopService(new Intent(cha, CarHudSenderService.class));
-				startButton.setBackgroundColor(Color.parseColor("#00F700"));
-	     		startButton.setClickable(true);
-				stopButton.setBackgroundColor(Color.parseColor("#706168"));
-	    		stopButton.setClickable(false);
-	    		TextView senderText = (TextView) findViewById(R.id.senderText);
-	    		senderText.setText(getString(R.string.service_stopped));
-	    		cha.setLastMessage(getString(R.string.service_stopped));
-	         }
-	     });
-		 final Button startButton = (Button) findViewById(R.id.start_button);
-	     startButton.setOnClickListener(new View.OnClickListener()
-	     {
-	         @Override
-			public void onClick(View v)
-	         {
-	 		    mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-			    if (mBluetoothAdapter.isEnabled())
-			    {
-			    	startService();
-		    		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		    		TextView senderText = (TextView) findViewById(R.id.senderText);
-		    		senderText.setText(getString(R.string.service_starting));
-		    		cha.setLastMessage(getString(R.string.service_starting));
-			    }
-			    else
-			    {
-			    	CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-			    	TextView errorText = (TextView) findViewById(R.id.errorText);
-			    	errorText.setText(getString(R.string.bt_not_available));
-			    	cha.setLastError(getString(R.string.bt_not_available));
-			    }
-	         }
-	     });
-	}
+        //SERVICE BUTTONS
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+                cha.setServiceRunning(false);
+                stopService(new Intent(cha, CarHudSenderService.class));
+                startButton.setBackgroundColor(Color.parseColor("#00F700"));
+                startButton.setClickable(true);
+                stopButton.setBackgroundColor(Color.parseColor("#706168"));
+                stopButton.setClickable(false);
+                TextView senderText = (TextView) findViewById(R.id.senderText);
+                senderText.setText(getString(R.string.service_stopped));
+                cha.setLastMessage(getString(R.string.service_stopped));
+            }
+        });
+        final Button startButton = (Button) findViewById(R.id.start_button);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (mBluetoothAdapter.isEnabled()) {
+                    startService();
+                    CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+                    TextView senderText = (TextView) findViewById(R.id.senderText);
+                    senderText.setText(getString(R.string.service_starting));
+                    cha.setLastMessage(getString(R.string.service_starting));
+                } else {
+                    CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+                    TextView errorText = (TextView) findViewById(R.id.errorText);
+                    errorText.setText(getString(R.string.bt_not_available));
+                    cha.setLastError(getString(R.string.bt_not_available));
+                }
+            }
+        });
+    }
 
-	//START SERVICE
-	public void startService()
-	{
-		stopButton = (Button) findViewById(R.id.stop_button);
-		startButton = (Button) findViewById(R.id.start_button);
+    //START SERVICE
+    public void startService() {
+        stopButton = (Button) findViewById(R.id.stop_button);
+        startButton = (Button) findViewById(R.id.start_button);
 
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-    	TextView errorText = (TextView) findViewById(R.id.errorText);
-    	errorText.setText("");
-    	cha.setLastError("");
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        TextView errorText = (TextView) findViewById(R.id.errorText);
+        errorText.setText("");
+        cha.setLastError("");
 
-		cha.setServiceRunning(true);
-		startService(new Intent(cha, CarHudSenderService.class));
-		CarHudSenderService.setMainActivity(this);
+        cha.setServiceRunning(true);
+        startService(new Intent(cha, CarHudSenderService.class));
+        CarHudSenderService.setMainActivity(this);
 
-		startButton.setBackgroundColor(Color.parseColor("#706168"));
-		startButton.setClickable(false);
-		stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
-		stopButton.setClickable(true);
-	}
+        startButton.setBackgroundColor(Color.parseColor("#706168"));
+        startButton.setClickable(false);
+        stopButton.setBackgroundColor(Color.parseColor("#A6180A"));
+        stopButton.setClickable(true);
+    }
 
-	//STOP SERVICE NO GPS
-	public void stopServiceGPS()
-	{
-		stopButton = (Button) findViewById(R.id.stop_button);
-		startButton = (Button) findViewById(R.id.start_button);
+    //STOP SERVICE NO GPS
+    public void stopServiceGPS() {
+        stopButton = (Button) findViewById(R.id.stop_button);
+        startButton = (Button) findViewById(R.id.start_button);
 
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		cha.setServiceRunning(false);
-		stopService(new Intent(cha, CarHudSenderService.class));
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        cha.setServiceRunning(false);
+        stopService(new Intent(cha, CarHudSenderService.class));
 
-		TextView errorText = (TextView) findViewById(R.id.errorText);
-		errorText.setText(R.string.gps_not_available);
-		cha.setLastError(getString(R.string.gps_not_available));
-		startButton.setBackgroundColor(Color.parseColor("#00F700"));
-		startButton.setClickable(true);
-		stopButton.setBackgroundColor(Color.parseColor("#706168"));
-		stopButton.setClickable(false);
-	}
+        TextView errorText = (TextView) findViewById(R.id.errorText);
+        errorText.setText(R.string.gps_not_available);
+        cha.setLastError(getString(R.string.gps_not_available));
+        startButton.setBackgroundColor(Color.parseColor("#00F700"));
+        startButton.setClickable(true);
+        stopButton.setBackgroundColor(Color.parseColor("#706168"));
+        stopButton.setClickable(false);
+    }
 
-	//STOP SERVICE NO MOCK GPS
-	public void stopServiceMockGPS()
-	{
-		stopButton = (Button) findViewById(R.id.stop_button);
-		startButton = (Button) findViewById(R.id.start_button);
+    //STOP SERVICE NO MOCK GPS
+    public void stopServiceMockGPS() {
+        stopButton = (Button) findViewById(R.id.stop_button);
+        startButton = (Button) findViewById(R.id.start_button);
 
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		cha.setServiceRunning(false);
-		stopService(new Intent(cha, CarHudSenderService.class));
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        cha.setServiceRunning(false);
+        stopService(new Intent(cha, CarHudSenderService.class));
 
-		TextView errorText = (TextView) findViewById(R.id.errorText);
-		errorText.setText(R.string.mockgps_not_available);
-		cha.setLastError(getString(R.string.mockgps_not_available));
-		startButton.setBackgroundColor(Color.parseColor("#00F700"));
-		startButton.setClickable(true);
-		stopButton.setBackgroundColor(Color.parseColor("#706168"));
-		stopButton.setClickable(false);
-	}
+        TextView errorText = (TextView) findViewById(R.id.errorText);
+        errorText.setText(R.string.mockgps_not_available);
+        cha.setLastError(getString(R.string.mockgps_not_available));
+        startButton.setBackgroundColor(Color.parseColor("#00F700"));
+        startButton.setClickable(true);
+        stopButton.setBackgroundColor(Color.parseColor("#706168"));
+        stopButton.setClickable(false);
+    }
 
 
-    public static class mHandler extends Handler
-    {
+    public static class mHandler extends Handler {
 
         private final Hud mActivity;
-        public mHandler(Hud activity)
-        {
+
+        public mHandler(Hud activity) {
             mActivity = activity;
         }
 
         @Override
-        public void handleMessage(Message msg)
-        {
-            switch (msg.what)
-            {
-            	case MESSAGE_STATE_CHANGE:
-                    if(D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1)
-                    {
-                    	case BluetoothChatServiceReceiver.STATE_CONNECTED:
-                    		mActivity.senderConnected = true;
-                            mActivity.setColorImage("connected","senderConnection");
-                    		mActivity.checkConnectionsAndHide();
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_STATE_CHANGE:
+                    if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                    switch (msg.arg1) {
+                        case BluetoothChatServiceReceiver.STATE_CONNECTED:
+                            mActivity.senderConnected = true;
+                            mActivity.setColorImage("connected", "senderConnection");
+                            mActivity.checkConnectionsAndHide();
                             break;
-                    	case BluetoothChatServiceReceiver.STATE_CONNECTING:
-                    		mActivity.senderConnected = false;
-                            mActivity.setColorImage("connecting","senderConnection");
-                    		mActivity.checkConnectionsAndHide();
+                        case BluetoothChatServiceReceiver.STATE_CONNECTING:
+                            mActivity.senderConnected = false;
+                            mActivity.setColorImage("connecting", "senderConnection");
+                            mActivity.checkConnectionsAndHide();
                             break;
-                    	case BluetoothChatServiceReceiver.STATE_LISTEN:
-                    	case BluetoothChatServiceReceiver.STATE_NONE:
-                    		mActivity.senderConnected = false;
-                            mActivity.setColorImage("notconnected","senderConnection");
-                    		mActivity.checkConnectionsAndHide();
-                    		break;
+                        case BluetoothChatServiceReceiver.STATE_LISTEN:
+                        case BluetoothChatServiceReceiver.STATE_NONE:
+                            mActivity.senderConnected = false;
+                            mActivity.setColorImage("notconnected", "senderConnection");
+                            mActivity.checkConnectionsAndHide();
+                            break;
                     }
-            		break;
+                    break;
                 case MESSAGE_WRITE:
                     break;
-            	case MESSAGE_READ:
-      	          if (D) Log.d(TAG, "message_read()");
-	                byte[] readBuf = (byte[]) msg.obj;
-	                	String str = new String(readBuf, 0, msg.arg1);
-	                	StringTokenizer st = new StringTokenizer(str, "~");
-	                	String artist = "", album = "", track = "", type = "", ntype = "", ss = "", error = "";
+                case MESSAGE_READ:
+                    if (D) Log.d(TAG, "message_read()");
+                    byte[] readBuf = (byte[]) msg.obj;
+                    String str = new String(readBuf, 0, msg.arg1);
+                    StringTokenizer st = new StringTokenizer(str, "~");
+                    String artist = "", album = "", track = "", type = "", ntype = "", ss = "", error = "";
 
-	                	if (st.hasMoreElements())
-	                		type = st.nextElement().toString();
-	                	if (type.equals("NAVIGATION"))
-	                	{
-		                	if (st.hasMoreElements())
-		                		ntype = st.nextElement().toString();
-		                	//SHOW NAVIGATION AREA
-		                	if (ntype.equals("POSTED"))
-		                	{
-			                	if (st.hasMoreElements())
-			                	{
-			                		ss = st.nextElement().toString();
-			                		if (!ss.isEmpty())
-			                		{
-			                			String[] sarr = ss.split("\n");
-			                			String nextAction = sarr[0];
-				                		if (sarr.length >= 3)
-				                		{
-				                			String est_arrival = sarr[1];
-				                			String est_dist = sarr[2];
+                    if (st.hasMoreElements())
+                        type = st.nextElement().toString();
+                    if (type.equals("NAVIGATION")) {
+                        if (st.hasMoreElements())
+                            ntype = st.nextElement().toString();
+                        //SHOW NAVIGATION AREA
+                        if (ntype.equals("POSTED")) {
+                            if (st.hasMoreElements()) {
+                                ss = st.nextElement().toString();
+                                if (!ss.isEmpty()) {
+                                    String[] sarr = ss.split("\n");
+                                    String nextAction = sarr[0];
+                                    if (sarr.length >= 3) {
+                                        String est_arrival = sarr[1];
+                                        String est_dist = sarr[2];
 
-											mActivity.setArrival(est_arrival);
-											mActivity.setDistance(est_dist);
-				                		}
-				                		if (!nextAction.isEmpty())
-				                			mActivity.showNavigation(nextAction);
-			                		}
-			                	}
-		                	}
-		                	//HIDE NAVIGATION AREA
-		                	else if (ntype.equals("CLEARED"))
-		                	{
-		                		mActivity.hideNavigation();
-		                	}
-	                	}
-	                	if (type.equals("MEDIA"))
-	                	{
-		                	if (st.hasMoreElements())
-		                		artist = st.nextElement().toString();
-		                	if (st.hasMoreElements())
-		                		album = st.nextElement().toString();
-		                	if (st.hasMoreElements())
-		                		track = st.nextElement().toString();
-		                	mActivity.displayMedia(artist,album,track);
-	                	}
-	                	if (type.equals("GPS"))
-	                	{
-	                		//SPEED
-	                		double currentSpeed = 0;
-		                	if (st.hasMoreElements())
-		                		currentSpeed = Double.parseDouble(st.nextElement().toString());
-	                		//ALTITUDE
-		                	double currentAltitude = 0;
-		                	if (st.hasMoreElements())
-		                		currentAltitude = Double.parseDouble(st.nextElement().toString());
-		                	//TIME
-		                	String localTime = "";
-		                	if (st.hasMoreElements())
-		                		 localTime = st.nextElement().toString();
-		                	//LATLON
-	                		if (st.hasMoreElements())
-	                			mActivity.lat = Double.parseDouble(st.nextElement().toString());
-	                		if (st.hasMoreElements())
-	                			mActivity.lon = Double.parseDouble(st.nextElement().toString());
+                                        mActivity.setArrival(est_arrival);
+                                        mActivity.setDistance(est_dist);
+                                    }
+                                    if (!nextAction.isEmpty())
+                                        mActivity.showNavigation(nextAction);
+                                }
+                            }
+                        }
+                        //HIDE NAVIGATION AREA
+                        else if (ntype.equals("CLEARED")) {
+                            mActivity.hideNavigation();
+                        }
+                    }
+                    if (type.equals("MEDIA")) {
+                        if (st.hasMoreElements())
+                            artist = st.nextElement().toString();
+                        if (st.hasMoreElements())
+                            album = st.nextElement().toString();
+                        if (st.hasMoreElements())
+                            track = st.nextElement().toString();
+                        mActivity.displayMedia(artist, album, track);
+                    }
+                    if (type.equals("GPS")) {
+                        //SPEED
+                        double currentSpeed = 0;
+                        if (st.hasMoreElements())
+                            currentSpeed = Double.parseDouble(st.nextElement().toString());
+                        //ALTITUDE
+                        double currentAltitude = 0;
+                        if (st.hasMoreElements())
+                            currentAltitude = Double.parseDouble(st.nextElement().toString());
+                        //TIME
+                        String localTime = "";
+                        if (st.hasMoreElements())
+                            localTime = st.nextElement().toString();
+                        //LATLON
+                        if (st.hasMoreElements())
+                            mActivity.lat = Double.parseDouble(st.nextElement().toString());
+                        if (st.hasMoreElements())
+                            mActivity.lon = Double.parseDouble(st.nextElement().toString());
 
-	                		//SPEED
-	                		mActivity.speedType = mActivity.sharedPrefs.getString("speedType", "gps");
-	                		if (mActivity.speedType.equals("gpssender"))
-	                		{
-						    	mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
-						    	if (!mActivity.useMetric)
-						    		currentSpeed = currentSpeed*2.2369;
-								String tmp = String.format(Locale.US,"%.0f",currentSpeed);
-								mActivity.setSpeed(tmp);
-	                		}
+                        //SPEED
+                        mActivity.speedType = mActivity.sharedPrefs.getString("speedType", "gps");
+                        if (mActivity.speedType.equals("gpssender")) {
+                            mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
+                            if (!mActivity.useMetric)
+                                currentSpeed = currentSpeed * 2.2369;
+                            String tmp = String.format(Locale.US, "%.0f", currentSpeed);
+                            mActivity.setSpeed(tmp);
+                        }
 
-	                		//ALTITUDE
-	                		mActivity.showAltitude = mActivity.sharedPrefs.getBoolean("showAltitude", false);
-	                		if (mActivity.showAltitude)
-	                		{
-						    	mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
-						    	if (!mActivity.useMetric)
-						    		currentAltitude = currentAltitude*3.2808399;
-								String tmp = String.format(Locale.US,"%.0f",currentAltitude);
-								mActivity.setAltitude(tmp);
-	                		}
+                        //ALTITUDE
+                        mActivity.showAltitude = mActivity.sharedPrefs.getBoolean("showAltitude", false);
+                        if (mActivity.showAltitude) {
+                            mActivity.useMetric = mActivity.sharedPrefs.getBoolean("useMetric", false);
+                            if (!mActivity.useMetric)
+                                currentAltitude = currentAltitude * 3.2808399;
+                            String tmp = String.format(Locale.US, "%.0f", currentAltitude);
+                            mActivity.setAltitude(tmp);
+                        }
 
-	                		//TIME
-	                		mActivity.showTime = mActivity.sharedPrefs.getBoolean("showTime", false);
-	                		if (mActivity.showTime)
-								mActivity.setTime(localTime);
-	                	}
-	                	if (type.equals("SMS"))
-	                	{
-	                		String title = "", message = "";
-		                	if (st.hasMoreElements())
-		                		title = st.nextElement().toString();
-		                	if (st.hasMoreElements())
-		                		message = st.nextElement().toString();
-	                    	messagePopup mp = new messagePopup();
-	                    	mp.setData(title, message, 8, false);
-	                        mActivity.showPopupTimedQueue(mp);
-	                	}
-	                	if (type.equals("CALL"))
-	                	{
-	                		String title = "", message = "";
-		                	if (st.hasMoreElements())
-		                		title = st.nextElement().toString();
-		                	if (st.hasMoreElements())
-		                		message = st.nextElement().toString();
-	                    	messagePopup mp = new messagePopup();
-	                    	mp.setData(title, message, 8, true);
-	                        mActivity.showPopupTimedQueue(mp);
-	                	}
-	                break;
+                        //TIME
+                        mActivity.showTime = mActivity.sharedPrefs.getBoolean("showTime", false);
+                        if (mActivity.showTime)
+                            mActivity.setTime(localTime);
+                    }
+                    if (type.equals("SMS")) {
+                        String title = "", message = "";
+                        if (st.hasMoreElements())
+                            title = st.nextElement().toString();
+                        if (st.hasMoreElements())
+                            message = st.nextElement().toString();
+                        messagePopup mp = new messagePopup();
+                        mp.setData(title, message, 8, false);
+                        mActivity.showPopupTimedQueue(mp);
+                    }
+                    if (type.equals("CALL")) {
+                        String title = "", message = "";
+                        if (st.hasMoreElements())
+                            title = st.nextElement().toString();
+                        if (st.hasMoreElements())
+                            message = st.nextElement().toString();
+                        messagePopup mp = new messagePopup();
+                        mp.setData(title, message, 8, true);
+                        mActivity.showPopupTimedQueue(mp);
+                    }
+                    break;
                 case MESSAGE_DEVICE_NAME:
                     //mActivity.makeToast(mActivity.getString(R.string.connected_to) + msg.getData().getString(DEVICE_NAME));
                     break;
                 case MESSAGE_CONNECTION_LOST:
-                	//mActivity.makeToast("CONNECTION LOST");
-                   	if (mActivity.activityStarted)
-                   		mActivity.mChatService.start();
+                    //mActivity.makeToast("CONNECTION LOST");
+                    if (mActivity.activityStarted)
+                        mActivity.mChatService.start();
                     break;
             }
         }
     }
 
- // To animate view slide out from top to bottom
-    public void slideToBottom(View view)
-    {
-	    statusHeight = view.getHeight();
-	    TranslateAnimation animate = new TranslateAnimation(0,0,0,statusHeight);
-	    animate.setDuration(500);
-	    animate.setFillAfter(true);
-	    view.startAnimation(animate);
-	    view.setVisibility(View.GONE);
+    // To animate view slide out from top to bottom
+    public void slideToBottom(View view) {
+        statusHeight = view.getHeight();
+        TranslateAnimation animate = new TranslateAnimation(0, 0, 0, statusHeight);
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.GONE);
     }
 
- // To animate view slide out from bottom to top
-    public void slideToTop(View view)
-    {
-    	TranslateAnimation animate = new TranslateAnimation(0,0,statusHeight,0);
-    	animate.setDuration(500);
-    	animate.setFillAfter(true);
-    	view.startAnimation(animate);
-    	view.setVisibility(View.VISIBLE);
+    // To animate view slide out from bottom to top
+    public void slideToTop(View view) {
+        TranslateAnimation animate = new TranslateAnimation(0, 0, statusHeight, 0);
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.startAnimation(animate);
+        view.setVisibility(View.VISIBLE);
     }
 
     //SEE IF CONNECTIONS ARE MADE AND HIDE STATUS BAR IF ALL IS GOOD
-    public void checkConnectionsAndHide()
-    {
-    	Boolean allConnected = true;
-    	if (senderNeeded && !senderConnected)
-    		allConnected = false;
-    	if (cobraNeeded && !cobraConnected)
-    		allConnected = false;
-    	if (obdNeeded && !obdConnected)
-    		allConnected = false;
-    	if (allConnected)
-    	{
-    		if (!statusHiding)
-    		{
-    			statusHiding = true;
-    			statusViewHandler.postDelayed(hideStatus, 5000);
-    		}
-    	}
-    	else
-    	{
-    		if (statusHiding)
-    		{
-    			statusViewHandler.removeCallbacks(hideStatus);
-    			statusHiding = false;
-    		}
-    		if (!statusShown)
-    		{
-    			slideToTop(findViewById(R.id.statusBar));
-    			statusShown = true;
-    		}
-    	}
+    public void checkConnectionsAndHide() {
+        Boolean allConnected = true;
+        if (senderNeeded && !senderConnected)
+            allConnected = false;
+        if (cobraNeeded && !cobraConnected)
+            allConnected = false;
+        if (obdNeeded && !obdConnected)
+            allConnected = false;
+        if (allConnected) {
+            if (!statusHiding) {
+                statusHiding = true;
+                statusViewHandler.postDelayed(hideStatus, 5000);
+            }
+        } else {
+            if (statusHiding) {
+                statusViewHandler.removeCallbacks(hideStatus);
+                statusHiding = false;
+            }
+            if (!statusShown) {
+                slideToTop(findViewById(R.id.statusBar));
+                statusShown = true;
+            }
+        }
     }
 
     //HIDE STATUS BAR RUNNABLE
-    Runnable hideStatus = new Runnable()
-    {
-         @Override
-		public void run()
-         {
-     		slideToBottom(findViewById(R.id.statusBar));
-     		statusShown = false;
-     		statusHiding = false;
-         }
+    Runnable hideStatus = new Runnable() {
+        @Override
+        public void run() {
+            slideToBottom(findViewById(R.id.statusBar));
+            statusShown = false;
+            statusHiding = false;
+        }
     };
 
     //SET ARRIVAL TIME
-    public void setArrival(String arrival)
-    {
-    	TextView estArrival = (TextView) findViewById(R.id.estArrival);
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
-		estArrival.setTextColor(dataColor);
-		estArrival.setText(arrival);
+    public void setArrival(String arrival) {
+        TextView estArrival = (TextView) findViewById(R.id.estArrival);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
+        estArrival.setTextColor(dataColor);
+        estArrival.setText(arrival);
     }
 
     //SET DISTANCE
-    public void setDistance(String distance)
-    {
-    	TextView estDistance = (TextView) findViewById(R.id.estDistance);
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
-		estDistance.setTextColor(dataColor);
-		estDistance.setText(distance);
+    public void setDistance(String distance) {
+        TextView estDistance = (TextView) findViewById(R.id.estDistance);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
+        estDistance.setTextColor(dataColor);
+        estDistance.setText(distance);
     }
 
     //HIDE MEDIA RUNNABLE
-    Runnable hideMedia = new Runnable()
-    {
-         @Override
-		public void run()
-         {
-        	 //SHOW BAT AND TEMP AGAIN IF NEEDED
-     		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-     		boolean uc = sharedPrefs.getBoolean("useCobra",false);
-    		if (uc)
-    		{
-	    		findViewById(R.id.batteryTitle).setVisibility(View.VISIBLE);
-	    		findViewById(R.id.batteryText).setVisibility(View.VISIBLE);
-    		}
-    		String st = sharedPrefs.getString("speedType","gps");
-    		if (st.equals("obd"))
-    		{
-	    		findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
-	    		findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
-    		}
-      		slideToBottom(findViewById(R.id.mediaotherlayout));
-     		slideToTop(findViewById(R.id.navigationlayout));
-    		tempMediaShown = false;
-         }
+    Runnable hideMedia = new Runnable() {
+        @Override
+        public void run() {
+            //SHOW BAT AND TEMP AGAIN IF NEEDED
+            sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            boolean uc = sharedPrefs.getBoolean("useCobra", false);
+            if (uc) {
+                findViewById(R.id.batteryTitle).setVisibility(View.VISIBLE);
+                findViewById(R.id.batteryText).setVisibility(View.VISIBLE);
+            }
+            String st = sharedPrefs.getString("speedType", "gps");
+            if (st.equals("obd")) {
+                findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
+                findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
+            }
+            slideToBottom(findViewById(R.id.mediaotherlayout));
+            slideToTop(findViewById(R.id.navigationlayout));
+            tempMediaShown = false;
+        }
     };
 
     //QUICK SHOW MEDIA WHEN NAVIGATION IS SHOWN AND NOT IN A CLOSE ALERT
-    public void quickShowMedia()
-    {
-    	if (navigationShown && !navigationCloseAlert)
-    	{
-    		mediaViewHandler.removeCallbacks(hideMedia);
-    		if (!tempMediaShown)
-    		{
-	    		tempMediaShown = true;
+    public void quickShowMedia() {
+        if (navigationShown && !navigationCloseAlert) {
+            mediaViewHandler.removeCallbacks(hideMedia);
+            if (!tempMediaShown) {
+                tempMediaShown = true;
 
-	    		//ONLY SHOW MEDIA, NOT BATTERY OR TEMP
-	    		findViewById(R.id.batteryTitle).setVisibility(View.GONE);
-	    		findViewById(R.id.batteryText).setVisibility(View.GONE);
-	    		findViewById(R.id.coolantTitle).setVisibility(View.GONE);
-	    		findViewById(R.id.coolantText).setVisibility(View.GONE);
+                //ONLY SHOW MEDIA, NOT BATTERY OR TEMP
+                findViewById(R.id.batteryTitle).setVisibility(View.GONE);
+                findViewById(R.id.batteryText).setVisibility(View.GONE);
+                findViewById(R.id.coolantTitle).setVisibility(View.GONE);
+                findViewById(R.id.coolantText).setVisibility(View.GONE);
 
-	    		slideToBottom(findViewById(R.id.navigationlayout));
-	    		slideToTop(findViewById(R.id.mediaotherlayout));
-    		}
-			mediaViewHandler.postDelayed(hideMedia, 3000);
-    	}
+                slideToBottom(findViewById(R.id.navigationlayout));
+                slideToTop(findViewById(R.id.mediaotherlayout));
+            }
+            mediaViewHandler.postDelayed(hideMedia, 3000);
+        }
     }
 
     //IF NAVIGATION CLOSE ALERT AND TEMP MEDIA IS SHOWN, QUICKLY GO BACK TO NAVIGATION
-    public void immediateSwitchNavigation()
-    {
-		mediaViewHandler.removeCallbacks(hideMedia);
-   	 	//SHOW BAT AND TEMP AGAIN IF NEEDED
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		boolean uc = sharedPrefs.getBoolean("useCobra",false);
-		if (uc)
-		{
-			findViewById(R.id.batteryTitle).setVisibility(View.VISIBLE);
-			findViewById(R.id.batteryText).setVisibility(View.VISIBLE);
-		}
-		String st = sharedPrefs.getString("speedType","gps");
-		if (st.equals("obd"))
-		{
-			findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
-			findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
-		}
-  		slideToBottom(findViewById(R.id.mediaotherlayout));
- 		slideToTop(findViewById(R.id.navigationlayout));
-		tempMediaShown = false;
+    public void immediateSwitchNavigation() {
+        mediaViewHandler.removeCallbacks(hideMedia);
+        //SHOW BAT AND TEMP AGAIN IF NEEDED
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean uc = sharedPrefs.getBoolean("useCobra", false);
+        if (uc) {
+            findViewById(R.id.batteryTitle).setVisibility(View.VISIBLE);
+            findViewById(R.id.batteryText).setVisibility(View.VISIBLE);
+        }
+        String st = sharedPrefs.getString("speedType", "gps");
+        if (st.equals("obd")) {
+            findViewById(R.id.coolantTitle).setVisibility(View.VISIBLE);
+            findViewById(R.id.coolantText).setVisibility(View.VISIBLE);
+        }
+        slideToBottom(findViewById(R.id.mediaotherlayout));
+        slideToTop(findViewById(R.id.navigationlayout));
+        tempMediaShown = false;
     }
 
     //SHOW NAVIGATION
-    public void showNavigation(String ss)
-    {
-    	if (!navigationShown)
-    		slideToBottom(findViewById(R.id.mediaotherlayout));
+    public void showNavigation(String ss) {
+        if (!navigationShown)
+            slideToBottom(findViewById(R.id.mediaotherlayout));
 
-		ImageView iv = (ImageView) findViewById(R.id.navigationIcon);
-		iv.setVisibility(View.GONE);
+        ImageView iv = (ImageView) findViewById(R.id.navigationIcon);
+        iv.setVisibility(View.GONE);
 
-		TextView navigationText = (TextView) findViewById(R.id.navigationText);
-		sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-		dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
+        TextView navigationText = (TextView) findViewById(R.id.navigationText);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
 //		navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
-		navigationText.setTextColor(dataColor);
-		navigationText.setText(ss);
+        navigationText.setTextColor(dataColor);
+        navigationText.setText(ss);
 
-		navigationCloseAlert = false;
-		if (ss.startsWith("0.1mi") || ss.startsWith("500ft") || ss.startsWith("450ft") || ss.startsWith("400ft") || ss.startsWith("350ft") || ss.startsWith("300ft") || ss.startsWith("250ft") || ss.startsWith("200ft") || ss.startsWith("150ft") || ss.startsWith("100ft") || ss.startsWith("50ft") || ss.startsWith("0ft"))
-		{
-			navigationCloseAlert = true;
-			if (tempMediaShown)
-				immediateSwitchNavigation();
-		}
+        navigationCloseAlert = false;
+        if (ss.startsWith("0.1mi") || ss.startsWith("500ft") || ss.startsWith("450ft") || ss.startsWith("400ft") || ss.startsWith("350ft") || ss.startsWith("300ft") || ss.startsWith("250ft") || ss.startsWith("200ft") || ss.startsWith("150ft") || ss.startsWith("100ft") || ss.startsWith("50ft") || ss.startsWith("0ft")) {
+            navigationCloseAlert = true;
+            if (tempMediaShown)
+                immediateSwitchNavigation();
+        }
 
 		/*int imageId = -1;
 
@@ -1421,132 +1306,115 @@ public class Hud extends ActionBarActivity
 		else if (!ss.contains("Rerouting") && !ss.contains("Re-routing"))
 			imageId = R.drawable.arrive;
 		*/
-		byte[] byteArray = getIntent().getByteArrayExtra("Image");
-		Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-		if (bmp != null)
-		{
-			iv.setImageBitmap(bmp);
-			iv.setBackgroundColor(0xFF000000);
-			iv.setColorFilter(dataColor);
-			iv.setVisibility(View.VISIBLE);
+        byte[] byteArray = getIntent().getByteArrayExtra("Image");
+        if (byteArray != null) {
+            Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            Log.v("bmp", String.valueOf(bmp.getByteCount()));
+            iv.setImageBitmap(bmp);
+            iv.setBackgroundColor(0xFF000000);
+            iv.setColorFilter(dataColor);
+            iv.setVisibility(View.VISIBLE);
 //			navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-			if (navigationCloseAlert)
-			{
-				iv.setColorFilter(0xFF000000);
-				iv.setBackgroundColor(dataColor);
-			}
-		}
+            if (navigationCloseAlert) {
+                iv.setColorFilter(0xFF000000);
+                iv.setBackgroundColor(dataColor);
+            }
+        }
 
-		if (!navigationShown)
-			slideToTop(findViewById(R.id.navigationlayout));
-		navigationShown = true;
+        if (!navigationShown)
+            slideToTop(findViewById(R.id.navigationlayout));
+        navigationShown = true;
     }
 
     //HIDE NAVIGATION
-    public void hideNavigation()
-    {
-    	if (navigationShown)
-    	{
-    		slideToBottom(findViewById(R.id.navigationlayout));
-			slideToTop(findViewById(R.id.mediaotherlayout));
-    	}
-		navigationShown = false;
+    public void hideNavigation() {
+        if (navigationShown) {
+            slideToBottom(findViewById(R.id.navigationlayout));
+            slideToTop(findViewById(R.id.mediaotherlayout));
+        }
+        navigationShown = false;
     }
 
     //SET SENDER TEXT
-    public void setSenderText(String msg)
-    {
-    	TextView senderText = (TextView) findViewById(R.id.senderText);
-    	if(senderText != null)
-    	{
-    		try
-    		{
-	    		senderText.setText(msg);
-	    		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-	    		cha.setLastMessage(msg);
-    		}
-    		catch (Exception e)
-    		{
-    			if (D) Log.w(TAG, "Exception writing to senderText, msg was: " + msg);
-    		}
-    	}
+    public void setSenderText(String msg) {
+        TextView senderText = (TextView) findViewById(R.id.senderText);
+        if (senderText != null) {
+            try {
+                senderText.setText(msg);
+                CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+                cha.setLastMessage(msg);
+            } catch (Exception e) {
+                if (D) Log.w(TAG, "Exception writing to senderText, msg was: " + msg);
+            }
+        }
     }
 
     // TOAST DISPLAY
-    public void makeToast(String msg)
-    {
-    	Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    public void makeToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     //DISPLAY MEDIA INFO
-    public void displayMedia(String artist, String album, String track)
-    {
-    	if (D) Log.w(TAG, "displayMedia " + artist + album + track);
-		CarHudApplication cha = ((CarHudApplication)getApplicationContext());
-		String lastArtistAlbumTrack = cha.getlastArtistAlbumTrack();
-		if (lastArtistAlbumTrack == null)
-			lastArtistAlbumTrack = "";
-		String newArtistAlbumTrack = artist + album + track;
+    public void displayMedia(String artist, String album, String track) {
+        if (D) Log.w(TAG, "displayMedia " + artist + album + track);
+        CarHudApplication cha = ((CarHudApplication) getApplicationContext());
+        String lastArtistAlbumTrack = cha.getlastArtistAlbumTrack();
+        if (lastArtistAlbumTrack == null)
+            lastArtistAlbumTrack = "";
+        String newArtistAlbumTrack = artist + album + track;
 
-		if (D) Log.w(TAG, "last = " + lastArtistAlbumTrack + ", new = " + newArtistAlbumTrack);
-		//DONT UPDATE THE UI IF THE DATA HASN'T CHANGED
-		if (!lastArtistAlbumTrack.equals(newArtistAlbumTrack))
-		{
-			cha.setLastArtistAlbumTrack(newArtistAlbumTrack);
-	    	TextView artistTextView = (TextView) findViewById(R.id.artistText);
-	    	TextView albumTextView = (TextView) findViewById(R.id.albumText);
-	    	TextView trackTextView = (TextView) findViewById(R.id.trackText);
+        if (D) Log.w(TAG, "last = " + lastArtistAlbumTrack + ", new = " + newArtistAlbumTrack);
+        //DONT UPDATE THE UI IF THE DATA HASN'T CHANGED
+        if (!lastArtistAlbumTrack.equals(newArtistAlbumTrack)) {
+            cha.setLastArtistAlbumTrack(newArtistAlbumTrack);
+            TextView artistTextView = (TextView) findViewById(R.id.artistText);
+            TextView albumTextView = (TextView) findViewById(R.id.albumText);
+            TextView trackTextView = (TextView) findViewById(R.id.trackText);
 
-	    	artistTextView.clearAnimation();
-	    	albumTextView.clearAnimation();
-	    	trackTextView.clearAnimation();
+            artistTextView.clearAnimation();
+            albumTextView.clearAnimation();
+            trackTextView.clearAnimation();
 
-	    	artistTextView.setText(artist);
-	    	albumTextView.setText(album);
-	    	trackTextView.setText(track);
+            artistTextView.setText(artist);
+            albumTextView.setText(album);
+            trackTextView.setText(track);
 
 
-	    	int[] location = new int[2];
-	    	artistTextView.getLocationOnScreen(location);
-	    	artistStart = location[0];
-	    	albumTextView.getLocationOnScreen(location);
-	    	albumStart = location[0];
-	    	trackTextView.getLocationOnScreen(location);
-	    	trackStart = location[0];
+            int[] location = new int[2];
+            artistTextView.getLocationOnScreen(location);
+            artistStart = location[0];
+            albumTextView.getLocationOnScreen(location);
+            albumStart = location[0];
+            trackTextView.getLocationOnScreen(location);
+            trackStart = location[0];
 
-	    	artistTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-	    	artistWidth = artistTextView.getMeasuredWidth();
-	    	albumTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-	    	albumWidth = albumTextView.getMeasuredWidth();
-	    	trackTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-	    	trackWidth = trackTextView.getMeasuredWidth();
+            artistTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            artistWidth = artistTextView.getMeasuredWidth();
+            albumTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            albumWidth = albumTextView.getMeasuredWidth();
+            trackTextView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            trackWidth = trackTextView.getMeasuredWidth();
 
-	    	if (artistWidth + artistStart > screenWidth)
-	    	{
-	    		animationOn = 1;
-	    		animateTextView(artistWidth, artistStart, artistTextView);
-	    	}
-	    	else if (albumWidth + albumStart > screenWidth)
-	    	{
-	    		animationOn = 2;
-	    		animateTextView(albumWidth, albumStart, albumTextView);
-	    	}
-	    	else if (trackWidth + trackStart > screenWidth)
-	    	{
-	    		animationOn = 3;
-	    		animateTextView(trackWidth, trackStart, trackTextView);
-	    	}
+            if (artistWidth + artistStart > screenWidth) {
+                animationOn = 1;
+                animateTextView(artistWidth, artistStart, artistTextView);
+            } else if (albumWidth + albumStart > screenWidth) {
+                animationOn = 2;
+                animateTextView(albumWidth, albumStart, albumTextView);
+            } else if (trackWidth + trackStart > screenWidth) {
+                animationOn = 3;
+                animateTextView(trackWidth, trackStart, trackTextView);
+            }
 
-	    	if (navigationShown)
-	    		quickShowMedia();
-		}
+            if (navigationShown)
+                quickShowMedia();
+        }
     }
 
     //CREATE TICKER TEXT FOR TEXTVIEW
-    public void animateTextView(float width, float start, TextView tv)
-    {
-   		int scrollBy = (int) Math.round(screenWidth - start - width - 50);
-   		int time = Math.abs(scrollBy) * 10;
+    public void animateTextView(float width, float start, TextView tv) {
+        int scrollBy = (int) Math.round(screenWidth - start - width - 50);
+        int time = Math.abs(scrollBy) * 10;
         Animation mAnimation = new TranslateAnimation(0, scrollBy, 0, 0);
         mAnimation.setDuration(time);
         mAnimation.setStartOffset(1000);
@@ -1555,118 +1423,104 @@ public class Hud extends ActionBarActivity
     }
 
     //KEEP TRACK OF ANIMATIONS
-    AnimationListener al = new AnimationListener()
-    {
-    	@Override
-		public void onAnimationStart(Animation animation)
-    	{
-    	}
-    	@Override
-		public void onAnimationRepeat(Animation animation)
-    	{
-    	}
-    	// at the end of the animation, start new activity
-    	@Override
-		public void onAnimationEnd(Animation animation)
-    	{
-        	TextView artistTextView = (TextView) findViewById(R.id.artistText);
-        	TextView albumTextView = (TextView) findViewById(R.id.albumText);
-        	TextView trackTextView = (TextView) findViewById(R.id.trackText);
-        	artistTextView.clearAnimation();
-        	albumTextView.clearAnimation();
-        	trackTextView.clearAnimation();
-    		switch (animationOn)
-    		{
-    			case 1 :
-    	        	if (albumWidth + albumStart> screenWidth)
-    	        	{
-    	        		animationOn = 2;
-    	        		animateTextView(albumWidth, albumStart, albumTextView);
-    	        	}
-    	        	else if (trackWidth + trackStart > screenWidth)
-    	        	{
-    	        		animationOn = 3;
-    	        		animateTextView(trackWidth, trackStart, trackTextView);
-    	        	}
-    	        	else if (artistWidth + artistStart > screenWidth)
-    	        	{
-    	        		animationOn = 1;
-    	        		animateTextView(artistWidth, artistStart, artistTextView);
-    	        	}
-    	        	break;
-    			case 2 :
-    	        	if (trackWidth + trackStart > screenWidth)
-    	        	{
-    	        		animationOn = 3;
-    	        		animateTextView(trackWidth, trackStart, trackTextView);
-    	        	}
-    	        	else if (artistWidth + artistStart > screenWidth)
-    	        	{
-    	        		animationOn = 1;
-    	        		animateTextView(artistWidth, artistStart, artistTextView);
-    	        	}
-    	        	else if (albumWidth + albumStart > screenWidth)
-    	        	{
-    	        		animationOn = 2;
-    	        		animateTextView(albumWidth, albumStart, albumTextView);
-    	        	}
-    	        	break;
-    			case 3 :
-    	        	if (artistWidth + artistStart > screenWidth)
-    	        	{
-    	        		animationOn = 1;
-    	        		animateTextView(artistWidth, artistStart, artistTextView);
-    	        	}
-    	        	else if (albumWidth + albumStart> screenWidth)
-    	        	{
-    	        		animationOn = 2;
-    	        		animateTextView(albumWidth, albumStart, albumTextView);
-    	        	}
-    	        	else if (trackWidth + trackStart > screenWidth)
-    	        	{
-    	        		animationOn = 3;
-    	        		animateTextView(trackWidth, trackStart, trackTextView);
-    	        	}
-    	        	break;
-    		}
-    	}
+    AnimationListener al = new AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        // at the end of the animation, start new activity
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            TextView artistTextView = (TextView) findViewById(R.id.artistText);
+            TextView albumTextView = (TextView) findViewById(R.id.albumText);
+            TextView trackTextView = (TextView) findViewById(R.id.trackText);
+            artistTextView.clearAnimation();
+            albumTextView.clearAnimation();
+            trackTextView.clearAnimation();
+            switch (animationOn) {
+                case 1:
+                    if (albumWidth + albumStart > screenWidth) {
+                        animationOn = 2;
+                        animateTextView(albumWidth, albumStart, albumTextView);
+                    } else if (trackWidth + trackStart > screenWidth) {
+                        animationOn = 3;
+                        animateTextView(trackWidth, trackStart, trackTextView);
+                    } else if (artistWidth + artistStart > screenWidth) {
+                        animationOn = 1;
+                        animateTextView(artistWidth, artistStart, artistTextView);
+                    }
+                    break;
+                case 2:
+                    if (trackWidth + trackStart > screenWidth) {
+                        animationOn = 3;
+                        animateTextView(trackWidth, trackStart, trackTextView);
+                    } else if (artistWidth + artistStart > screenWidth) {
+                        animationOn = 1;
+                        animateTextView(artistWidth, artistStart, artistTextView);
+                    } else if (albumWidth + albumStart > screenWidth) {
+                        animationOn = 2;
+                        animateTextView(albumWidth, albumStart, albumTextView);
+                    }
+                    break;
+                case 3:
+                    if (artistWidth + artistStart > screenWidth) {
+                        animationOn = 1;
+                        animateTextView(artistWidth, artistStart, artistTextView);
+                    } else if (albumWidth + albumStart > screenWidth) {
+                        animationOn = 2;
+                        animateTextView(albumWidth, albumStart, albumTextView);
+                    } else if (trackWidth + trackStart > screenWidth) {
+                        animationOn = 3;
+                        animateTextView(trackWidth, trackStart, trackTextView);
+                    }
+                    break;
+            }
+        }
     };
 
-	//SEE IF MOCK LOCATION IS ENABLED
-	public static boolean isMockSettingsON(Context context)
-	{
-		// returns true if mock location enabled, false if not enabled.
-		if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
-			return false;
-		else
-			return true;
-	}
+    //SEE IF MOCK LOCATION IS ENABLED
+    public static boolean isMockSettingsON(Context context) {
+        // returns true if mock location enabled, false if not enabled.
+        if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
+            return false;
+        else
+            return true;
+    }
 
-	//START GPS LISTENER
-	public void getGPSdata()
-	{
-		if (D) Log.d(TAG, "getGPSdata()");
-		locationManager = (LocationManager) getSystemService (Context.LOCATION_SERVICE);
-		mockGPS = sharedPrefs.getBoolean("mockGPS", false);
-		if (mockGPS)
-		{
-			if (isMockSettingsON(this))
-			{
-				String mocLocationProvider = LocationManager.GPS_PROVIDER;
-				locationManager.addTestProvider(mocLocationProvider, false, false, false, false, true, true, true, 0, 5);
-				locationManager.setTestProviderEnabled(mocLocationProvider, true);
-			}
-			else
-				Toast.makeText(this, getString(R.string.mockgps_not_available), Toast.LENGTH_LONG).show();
-		}
-		if ( locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ))
-		{
-			currentSpeed = 0;
-			currentAltitude = 0;
-			currentTime = "";
-			locationListener = new gpsSpeedListener();
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-			showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
+    //START GPS LISTENER
+    public void getGPSdata() {
+        if (D) Log.d(TAG, "getGPSdata()");
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mockGPS = sharedPrefs.getBoolean("mockGPS", false);
+        if (mockGPS) {
+            if (isMockSettingsON(this)) {
+                String mocLocationProvider = LocationManager.GPS_PROVIDER;
+                locationManager.addTestProvider(mocLocationProvider, false, false, false, false, true, true, true, 0, 5);
+                locationManager.setTestProviderEnabled(mocLocationProvider, true);
+            } else
+                Toast.makeText(this, getString(R.string.mockgps_not_available), Toast.LENGTH_LONG).show();
+        }
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            currentSpeed = 0;
+            currentAltitude = 0;
+            currentTime = "";
+            locationListener = new gpsSpeedListener();
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            showLocalTemp = sharedPrefs.getBoolean("showLocalTemp", false);
 			if (showLocalTemp)
 				localTempThread.start();
 		}

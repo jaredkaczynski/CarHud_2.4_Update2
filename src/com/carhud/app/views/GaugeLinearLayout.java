@@ -20,7 +20,9 @@ public class GaugeLinearLayout extends LinearLayout
 	 {
 		 super(context, attrs);
 		 setLayerType(View.LAYER_TYPE_HARDWARE, null);
-		 cha = ((CarHudApplication) context.getApplicationContext());
+		 if (!isInEditMode()) {
+			 cha = ((CarHudApplication) context.getApplicationContext());
+		 }
 		 rpm = 0;
 		 dataColor = 0xFF33B5E5;
 

@@ -24,6 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,8 +54,8 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                     continue;
                 BitmapReflectionAction concrete = (BitmapReflectionAction)action;
                 bmp = concrete.getBitmap();
-                //SaveImage(bmp);
-
+                Log.v("BMP Size", String.valueOf(bmp.getByteCount()));
+                SaveImage(bmp);
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Notification temp = sbn.getNotification();
@@ -220,24 +221,44 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
 
             Intent i = new  Intent("com.carhud.app.NOTIFICATION_LISTENER_MESSAGE");
 //    		i.putExtra("notification_event","NAVIGATION~" + sbn.getId() + "~POSTED~" + ss + "~");
-    		i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");
             //Convert to byte array
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
+            i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");
 
             //i.putExtra("Image",byteArray);
     		sendBroadcast(i);
     	}
     }
 
+
+    public static long hashBitmap(Bitmap bmp){
+        /*ByteBuffer bbuf = ByteBuffer.allocate(10000);
+        bmp.copyPixelsToBuffer(bbuf);*/
+        long hash = 31; //or a higher prime at your choice
+        for(int x = 0; x < bmp.getWidth(); x+=2){
+            for (int y = 0; y < bmp.getHeight(); y+=2){
+                int add = 0;
+                if(bmp.getPixel(x,y) == 0){
+                    add += (x + y);
+                } else {
+                    add += (191 + x + y);
+                }
+                hash += add;
+            }
+        }
+        return hash;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void SaveImage(Bitmap finalBitmap) {
 
         String root = Environment.getExternalStorageDirectory().getAbsolutePath();
         File myDir = new File(root + "/saved_images");
         myDir.mkdirs();
 
-        String fname = "Image1-"+ "test" +".jpg";
+        String fname = "Image-"+ hashBitmap(finalBitmap) +".png";
         File file = new File (myDir, fname);
         if (file.exists ()) file.delete ();
         try {

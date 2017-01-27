@@ -17,6 +17,108 @@
 
 		<!-- SPEEDOMETER AND RPM -->
 		<LinearLayout
+			android:id="@+id/speedorpmlayout"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:layout_gravity="center"
+			android:layout_weight=".4"
+			android:orientation="vertical">
+
+			<!-- SPEEDOMETER -->
+			<TextView
+				android:id="@+id/speedText"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="#33B5E5"
+				android:typeface="monospace"
+				android:maxLines="1"
+				android:includeFontPadding="false"
+				android:lineSpacingMultiplier="1"
+				android:lineSpacingExtra="0dp"
+				android:paddingTop="0dp"
+				android:paddingBottom="0dp"
+				android:layout_marginTop="0dp"
+				android:layout_marginBottom="0dp"
+				android:textSize="12sp"
+				android:gravity="center" />
+
+			<!--  RPM TEXT AND GAUGE-->
+			<LinearLayout
+				android:id="@+id/rpmtextandgaugelayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:visibility="gone">
+
+				<!--  RPM TEXT AND LABEL -->
+				<LinearLayout
+					android:id="@+id/rpmtextlabellayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:visibility="gone">
+
+					<!--  RPM TEXT -->
+					<TextView
+						android:id="@+id/rpmText"
+						android:layout_width="0dp"
+						android:layout_height="match_parent"
+						android:textColor="#33B5E5"
+						android:typeface="monospace"
+						android:layout_weight=".65"
+						android:maxLines="1"
+						android:textSize="12sp"
+						android:includeFontPadding="false"
+						android:lineSpacingMultiplier="1"
+						android:lineSpacingExtra="0dp"
+						android:paddingTop="0dp"
+						android:paddingBottom="0dp"
+						android:layout_marginTop="0dp"
+						android:layout_marginBottom="0dp"
+						android:gravity="right|center_vertical" />
+
+					<!--  RPM LABEL -->
+					<TextView
+						android:id="@+id/rpmTextLabel"
+						android:layout_width="0dp"
+						android:layout_height="match_parent"
+						android:textColor="#33B5E5"
+						android:typeface="monospace"
+						android:layout_weight=".35"
+						android:maxLines="1"
+						android:includeFontPadding="false"
+						android:lineSpacingMultiplier="1"
+						android:lineSpacingExtra="0dp"
+						android:paddingTop="0dp"
+						android:paddingBottom="0dp"
+						android:layout_marginTop="0dp"
+						android:layout_marginBottom="0dp"
+						android:text="RPM"
+						android:textSize="12dp"
+						android:gravity="left|center_vertical" />
+				</LinearLayout>
+
+				<!-- RPM GAUGE -->
+				<LinearLayout
+					android:id="@+id/rpmgaugelayout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:visibility="gone">
+
+					<!-- RPM GAUGE -->
+					<com.carhud.app.views.GaugeLinearLayout
+						android:id="@+id/gauge"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:background="#000000"/>
+				</LinearLayout>
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
 			android:orientation="vertical"
 			android:layout_height="match_parent"
 			android:gravity="center"
@@ -319,108 +421,6 @@
 							android:textSize="25sp" />
 					</TableRow>
 				</TableLayout>
-			</LinearLayout>
-
-		</LinearLayout>
-
-		<LinearLayout
-			android:id="@+id/speedorpmlayout"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:layout_gravity="center"
-			android:layout_weight=".4"
-			android:orientation="vertical">
-
-			<!-- SPEEDOMETER -->
-			<TextView
-				android:id="@+id/speedText"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:textColor="#33B5E5"
-				android:typeface="monospace"
-				android:maxLines="1"
-				android:includeFontPadding="false"
-				android:lineSpacingMultiplier="1"
-				android:lineSpacingExtra="0dp"
-				android:paddingTop="0dp"
-				android:paddingBottom="0dp"
-				android:layout_marginTop="0dp"
-				android:layout_marginBottom="0dp"
-				android:textSize="12sp"
-				android:gravity="center" />
-
-			<!--  RPM TEXT AND GAUGE-->
-			<LinearLayout
-				android:id="@+id/rpmtextandgaugelayout"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:visibility="gone">
-
-				<!--  RPM TEXT AND LABEL -->
-				<LinearLayout
-					android:id="@+id/rpmtextlabellayout"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="horizontal"
-					android:visibility="gone">
-
-					<!--  RPM TEXT -->
-					<TextView
-						android:id="@+id/rpmText"
-						android:layout_width="0dp"
-						android:layout_height="match_parent"
-						android:textColor="#33B5E5"
-						android:typeface="monospace"
-						android:layout_weight=".65"
-						android:maxLines="1"
-						android:textSize="12sp"
-						android:includeFontPadding="false"
-						android:lineSpacingMultiplier="1"
-						android:lineSpacingExtra="0dp"
-						android:paddingTop="0dp"
-						android:paddingBottom="0dp"
-						android:layout_marginTop="0dp"
-						android:layout_marginBottom="0dp"
-						android:gravity="right|center_vertical" />
-
-					<!--  RPM LABEL -->
-					<TextView
-						android:id="@+id/rpmTextLabel"
-						android:layout_width="0dp"
-						android:layout_height="match_parent"
-						android:textColor="#33B5E5"
-						android:typeface="monospace"
-						android:layout_weight=".35"
-						android:maxLines="1"
-						android:includeFontPadding="false"
-						android:lineSpacingMultiplier="1"
-						android:lineSpacingExtra="0dp"
-						android:paddingTop="0dp"
-						android:paddingBottom="0dp"
-						android:layout_marginTop="0dp"
-						android:layout_marginBottom="0dp"
-						android:text="RPM"
-						android:textSize="12dp"
-						android:gravity="left|center_vertical" />
-				</LinearLayout>
-
-				<!-- RPM GAUGE -->
-				<LinearLayout
-					android:id="@+id/rpmgaugelayout"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:orientation="vertical"
-					android:visibility="gone">
-
-					<!-- RPM GAUGE -->
-					<com.carhud.app.views.GaugeLinearLayout
-						android:id="@+id/gauge"
-						android:layout_width="match_parent"
-						android:layout_height="match_parent"
-						android:background="#000000"/>
-				</LinearLayout>
 			</LinearLayout>
 
 		</LinearLayout>

@@ -16,6 +16,7 @@
 
 package com.carhud.app.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -298,26 +299,39 @@ public class BluetoothChatServiceReceiver {
 		public void run() 
         {
             Log.i(TAG, "BEGIN mConnectedThread");
+            byte[] readBuf;
             byte[] buffer = new byte[1024];
-            int bytes;
+            int bytes = 0;
+            ByteArrayOutputStream outputStream;
+            int nbytes = 0;
             // Keep listening to the InputStream while connected
-            while (true) 
-            {
-                try 
-                {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-                    // Send the obtained bytes to the UI Activity 
-                    mHandler.obtainMessage(Hud.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                } 
-                catch (IOException e) 
-                {
-                    Log.e(TAG, "disconnected", e);
-                    connectionLost();
-                    // Start the service over to restart listening mode
+            while (true) {
+                int length = 0;
+                outputStream = new ByteArrayOutputStream();
+                do {
+                    try {
+                        buffer = new byte[990];
+                        // Read from the InputStream
+                        nbytes = mmInStream.read(buffer);
+                        Log.v(TAG, "read nbytes: " + nbytes);
+
+                        // Send the obtained bytes to the UI Activity
+                    } catch (IOException e) {
+                        Log.v(TAG, "disconnected", e);
+                        connectionLost();
+                        // Start the service over to restart listening mode
 //                    BluetoothChatServiceReceiver.this.start();
-                    break;
-                }
+                        break;
+                    }
+                    try {
+                        outputStream.write(buffer);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } while (nbytes == 990);
+                readBuf = outputStream.toByteArray();
+                Log.v(TAG, "total bytes: " + readBuf.length);
+                mHandler.obtainMessage(Hud.MESSAGE_READ, readBuf.length, -1, readBuf).sendToTarget();
             }
         }
 

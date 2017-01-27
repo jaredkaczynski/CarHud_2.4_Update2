@@ -238,19 +238,19 @@ public class BluetoothChatServiceSender
         @Override
 		public void run() 
         {
-            Log.i(TAG, "BEGIN mConnectedThread");
+            Log.v(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[4096];
             int bytes;
-            while (true) 
+            while (true)
             {
-                try 
+                try
                 {
                     bytes = mmInStream.read(buffer);
                     nHandler.obtainMessage(CarHudSenderService.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                } 
-                catch (IOException e) 
+                }
+                catch (IOException e)
                 {
-                    Log.e(TAG, "disconnected", e);
+                    Log.v(TAG, "disconnected", e);
                     connectionLost();
                     break;
                 }
@@ -262,6 +262,7 @@ public class BluetoothChatServiceSender
             try 
             {
                 mmOutStream.write(buffer);
+                mmOutStream.flush();
                 nHandler.obtainMessage(CarHudSenderService.MESSAGE_WRITE, -1, -1, buffer).sendToTarget();
             } 
             catch (IOException e) 

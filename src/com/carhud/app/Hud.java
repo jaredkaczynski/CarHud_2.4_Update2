@@ -25,6 +25,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
@@ -1350,9 +1352,9 @@ public class Hud extends ActionBarActivity
 				immediateSwitchNavigation();
 		}
 
-		int imageId = -1;
+		/*int imageId = -1;
 
-		if (ss.contains("Head"))
+		if (ss.contains("Image"))
 			imageId = R.drawable.depart;
 		else if (ss.contains("Turn left"))
 		{
@@ -1418,10 +1420,12 @@ public class Hud extends ActionBarActivity
 			imageId = R.drawable.uturn;
 		else if (!ss.contains("Rerouting") && !ss.contains("Re-routing"))
 			imageId = R.drawable.arrive;
-
-		if (imageId >= 0)
+		*/
+		byte[] byteArray = getIntent().getByteArrayExtra("Image");
+		Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+		if (bmp != null)
 		{
-			iv.setImageResource(imageId);
+			iv.setImageBitmap(bmp);
 			iv.setBackgroundColor(0xFF000000);
 			iv.setColorFilter(dataColor);
 			iv.setVisibility(View.VISIBLE);

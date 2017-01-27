@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,13 +13,23 @@ import android.service.notification.StatusBarNotification;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
+import com.carhud.app.R;
+
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import jp.yokomark.remoteview.reader.RemoteViewsInfo;
+import jp.yokomark.remoteview.reader.RemoteViewsReader;
+import jp.yokomark.remoteview.reader.action.BitmapReflectionAction;
+import jp.yokomark.remoteview.reader.action.RemoteViewsAction;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class CarHudNotificationListenerService extends NotificationListenerService
@@ -30,7 +41,17 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
         Log.v("Notification",sbn.getPackageName());
     	if (sbn.getPackageName().equals("com.google.android.apps.maps"))
     	{
+            Bitmap bmp = null;
             String ss = null;
+            RemoteViews remoteViews = sbn.getNotification().contentView;
+            RemoteViewsInfo info = RemoteViewsReader.read(this, sbn.getNotification().contentView);
+            for (RemoteViewsAction action : info.getActions()) {
+                if (!(action instanceof BitmapReflectionAction))
+                    continue;
+                BitmapReflectionAction concrete = (BitmapReflectionAction)action;
+                bmp = concrete.getBitmap();
+
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Notification temp = sbn.getNotification();
                 Log.v("Notification",temp.toString());
@@ -164,27 +185,6 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                                 Log.v("reflect1",t);
                                 text.add(t);
                             }
-                            else if (methodName.equals("setString"))
-                            {
-                                // Parameter type (10 = Character Sequence)
-                                parcel.readInt();
-
-                                // Store the actual string
-                                String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString();
-                                Log.v("reflect2",t);
-                                text.add(t);
-                            }
-                            /*else if (methodName.equals("setImageBitmap"))
-                            {
-                                // Parameter type (10 = Character Sequence)
-                                parcel.setDataPosition(0);
-                                parcel.toString();
-
-                                // Store the actual string
-                                Bitmap t = Bitmap.CREATOR.createFromParcel(parcel);
-                                Log.v("reflect2", t.toString());
-                            }*/
-
                             // Save times. Comment this section out if the notification time isn't important
                             else if (methodName.equals("setTime"))
                             {
@@ -216,7 +216,13 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
 
             Intent i = new  Intent("com.carhud.app.NOTIFICATION_LISTENER_MESSAGE");
 //    		i.putExtra("notification_event","NAVIGATION~" + sbn.getId() + "~POSTED~" + ss + "~");
-    		i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");    		
+    		i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");
+            //Convert to byte array
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            i.putExtra("Image",byteArray);
     		sendBroadcast(i);
     	}
     }

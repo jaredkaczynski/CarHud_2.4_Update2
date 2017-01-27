@@ -23,26 +23,8 @@ android:layout_width="0dp"
 android:layout_height="match_parent"
 android:gravity="center"
 android:layout_gravity="center"
-android:layout_weight=".4"
+android:layout_weight=".0"
 android:orientation="vertical">
-
-<!-- SPEEDOMETER -->
-<TextView
-android:id="@+id/speedText"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:textColor="#33B5E5"
-android:typeface="monospace"
-android:maxLines="1"
-android:includeFontPadding="false"
-android:lineSpacingMultiplier="1"
-android:lineSpacingExtra="0dp"
-android:paddingTop="0dp"
-android:paddingBottom="0dp"
-android:layout_marginTop="0dp"
-android:layout_marginBottom="0dp"
-android:textSize="12sp"
-android:gravity="center" />
 
 <!--  RPM TEXT AND GAUGE-->
 <LinearLayout
@@ -133,62 +115,85 @@ android:layout_width="0dp">
         android:layout_weight=".8"
         android:id="@+id/navigationlayout">
 
-        <LinearLayout
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight=".8">
+
+			<TextView
+        android:id="@+id/navigationText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:gravity="left|center_vertical"
-            android:layout_weight=".8">
-
-            <ImageView
-        android:id="@+id/navigationIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:contentDescription="@string/navigationIcon"
-        android:visibility="visible"
-        android:src="@drawable/unknown" />
-
-            <TextView
-        android:id="@+id/navigationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="#33B5E5"
         android:paddingBottom="15dp"
         android:textSize="30sp"
-            android:text="NAvigate Here" />
+            android:text="NAvigate Here"
+				android:layout_weight=".2" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".2">
-
-            <TextView
-            android:id="@+id/estDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight=".7">
+				<!-- SPEEDOMETER -->
+				<TextView
+					android:id="@+id/speedText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:textColor="#33B5E5"
+					android:typeface="monospace"
+					android:maxLines="1"
+					android:includeFontPadding="false"
+					android:lineSpacingMultiplier="1"
+					android:lineSpacingExtra="0dp"
+					android:paddingTop="0dp"
+					android:paddingBottom="0dp"
+					android:layout_marginTop="0dp"
+					android:layout_marginBottom="0dp"
+					android:textSize="12sp"
+					android:gravity="center" />
+				<ImageView
+            android:id="@+id/navigationIcon"
+					android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="#33B5E5"
-            android:textSize="12sp"
-                android:text="10 miles"
-                android:layout_weight="1" />
+            android:contentDescription="@string/navigationIcon"
+            android:visibility="visible"
+            android:src="@drawable/unknown"
+                    android:layout_weight=".7"
+					android:layout_width="0dp" />
+			</LinearLayout>
 
-            <TextView
-            android:id="@+id/estArrival"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="#33B5E5"
-            android:textSize="12sp"
-                android:text="7:15"
-                android:layout_weight="1" />
-        </LinearLayout>
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_gravity="bottom"
+				android:layout_weight=".1">
 
-    </LinearLayout>
+				<TextView
+    android:id="@+id/estArrival"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textColor="#33B5E5"
+    android:textSize="12sp"
+    android:text="7:15" />
+
+				<TextView
+                android:id="@+id/estDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="#33B5E5"
+                android:textSize="12sp"
+                    android:text="10 miles" />
+
+			</LinearLayout>
+		</LinearLayout>
+
+	</LinearLayout>
 
     <LinearLayout
 android:id="@+id/mediaotherlayout"

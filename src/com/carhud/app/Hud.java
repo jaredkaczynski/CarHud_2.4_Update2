@@ -1058,18 +1058,11 @@ public class Hud extends ActionBarActivity
 			                			String nextAction = sarr[0];
 				                		if (sarr.length >= 3)
 				                		{
-				                			String est_arrival = sarr[sarr.length - 1];
-				                			String est_dist = sarr[sarr.length - 2];
-				                			if (est_arrival.contains("Estimated arrival at"))
-				                			{
-				                				est_arrival = est_arrival.substring(est_arrival.indexOf("Estimated arrival at")+20).trim();
-				                				mActivity.setArrival(est_arrival);
-				                			}
-				                			if (est_dist.contains("to destination"))
-				                			{
-				                				est_dist = est_dist.substring(0,est_dist.indexOf("to destination")).trim();
-				                					mActivity.setDistance(est_dist);
-				                			}
+				                			String est_arrival = sarr[1];
+				                			String est_dist = sarr[2];
+
+											mActivity.setArrival(est_arrival);
+											mActivity.setDistance(est_dist);
 				                		}
 				                		if (!nextAction.isEmpty())
 				                			mActivity.showNavigation(nextAction);

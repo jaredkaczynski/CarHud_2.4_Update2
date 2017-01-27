@@ -3,6 +3,7 @@ package com.carhud.app.service;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -57,7 +58,8 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
 
                             // The tag tells which type of action it is (2 is ReflectionAction, from the source)
                             int tag = parcel.readInt();
-                            if (tag != 2) continue;
+                            Log.v("Tag Value", String.valueOf(tag));
+                            if (tag != 2 && tag != 12) continue;
 
                             // View ID
                             parcel.readInt();
@@ -85,6 +87,16 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                                 Log.v("reflect2",t);
                                 text.add(t);
                             }
+                            else if (methodName.equals("setImageBitmap"))
+                            {
+                                // Parameter type (10 = Character Sequence)
+                                /*parcel.setDataPosition(0);
+                                parcel.toString();
+
+                                // Store the actual string
+                                Bitmap t = Bitmap.CREATOR.createFromParcel(parcel);*/
+                                Log.v("reflect2", parcel.toString());
+                            }
 
                             // Save times. Comment this section out if the notification time isn't important
                             else if (methodName.equals("setTime"))
@@ -108,6 +120,97 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                         Log.e("NotificationClassifier", e.toString());
                     }
                     Log.v("Notification1",text.toString());
+                    ss = text.get(2);
+                }
+                if(temp.contentView != null){
+                    Log.v("Notification1",temp.contentView.toString());
+                    // Use reflection to examine the m_actions member of the given RemoteViews object.
+                    // It's not pretty, but it works.
+                    RemoteViews views = temp.contentView;
+                    List<String> text = new ArrayList<>();
+                    try
+                    {
+                        Field field = views.getClass().getDeclaredField("mActions");
+                        field.setAccessible(true);
+
+                        @SuppressWarnings("unchecked")
+                        ArrayList<Parcelable> actions = (ArrayList<Parcelable>) field.get(views);
+                        Log.v("actions",actions.toString());
+                        // Find the setText() and setTime() reflection actions
+                        for (Parcelable p : actions)
+                        {
+                            Parcel parcel = Parcel.obtain();
+                            p.writeToParcel(parcel, 0);
+                            parcel.setDataPosition(0);
+
+                            // The tag tells which type of action it is (2 is ReflectionAction, from the source)
+                            int tag = parcel.readInt();
+                            Log.v("Tag Value", String.valueOf(tag));
+                            if (tag != 2 && tag != 12) continue;
+
+                            // View ID
+                            parcel.readInt();
+
+                            String methodName = parcel.readString();
+                            if (methodName == null) continue;
+                                // Save strings
+                            else if (methodName.equals("setText"))
+                            {
+                                // Parameter type (10 = Character Sequence)
+                                parcel.readInt();
+
+                                // Store the actual string
+                                String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString();
+                                Log.v("reflect1",t);
+                                text.add(t);
+                            }
+                            else if (methodName.equals("setString"))
+                            {
+                                // Parameter type (10 = Character Sequence)
+                                parcel.readInt();
+
+                                // Store the actual string
+                                String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString();
+                                Log.v("reflect2",t);
+                                text.add(t);
+                            }
+                            /*else if (methodName.equals("setImageBitmap"))
+                            {
+                                // Parameter type (10 = Character Sequence)
+                                parcel.setDataPosition(0);
+                                parcel.toString();
+
+                                // Store the actual string
+                                Bitmap t = Bitmap.CREATOR.createFromParcel(parcel);
+                                Log.v("reflect2", t.toString());
+                            }*/
+
+                            // Save times. Comment this section out if the notification time isn't important
+                            else if (methodName.equals("setTime"))
+                            {
+                                // Parameter type (5 = Long)
+                                parcel.readInt();
+
+                                String t = new SimpleDateFormat("h:mm a").format(new Date(parcel.readLong()));
+                                text.add(t);
+                            } else {
+                                Log.v("Method",methodName);
+                            }
+
+                            parcel.recycle();
+                        }
+                    }
+
+                    // It's not usually good style to do this, but then again, neither is the use of reflection...
+                    catch (Exception e)
+                    {
+                        Log.e("NotificationClassifier", e.toString());
+                    }
+                    Log.v("Notification1",text.toString());
+                    //Split on -
+                    String[] BigData = text.get(1).split("-");
+                    //Arrival time, Destination
+                    ss  += "\n" + "Estimated arrival at" + BigData[1] + "\n" + "to destination" + BigData[0];
                 }
             }
 

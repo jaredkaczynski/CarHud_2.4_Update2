@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.service.notification.NotificationListenerService;
@@ -20,6 +21,8 @@ import android.widget.Toast;
 import com.carhud.app.R;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +53,7 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                     continue;
                 BitmapReflectionAction concrete = (BitmapReflectionAction)action;
                 bmp = concrete.getBitmap();
+                //SaveImage(bmp);
 
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -225,6 +229,26 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
             //i.putExtra("Image",byteArray);
     		sendBroadcast(i);
     	}
+    }
+
+    private static void SaveImage(Bitmap finalBitmap) {
+
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+
+        String fname = "Image1-"+ "test" +".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

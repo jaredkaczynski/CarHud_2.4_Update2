@@ -146,6 +146,8 @@ public class Hud extends ActionBarActivity {
 
     Timer timer = new Timer();
 
+    private Bitmap NavIcon = null;
+
     private AdView adView;
     ActionBar ab;
 
@@ -1237,7 +1239,7 @@ public class Hud extends ActionBarActivity {
                 immediateSwitchNavigation();
         }
 
-		/*int imageId = -1;
+		int imageId = -1;
 
 		if (ss.contains("Image"))
 			imageId = R.drawable.depart;
@@ -1305,12 +1307,10 @@ public class Hud extends ActionBarActivity {
 			imageId = R.drawable.uturn;
 		else if (!ss.contains("Rerouting") && !ss.contains("Re-routing"))
 			imageId = R.drawable.arrive;
-		*/
-        byte[] byteArray = getIntent().getByteArrayExtra("Image");
-        if (byteArray != null) {
-            Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            Log.v("bmp", String.valueOf(bmp.getByteCount()));
-            iv.setImageBitmap(bmp);
+
+
+            //Log.v("bmp", String.valueOf(bmp.getByteCount()));
+            iv.setImageResource(imageId);
             iv.setBackgroundColor(0xFF000000);
             iv.setColorFilter(dataColor);
             iv.setVisibility(View.VISIBLE);
@@ -1319,11 +1319,21 @@ public class Hud extends ActionBarActivity {
                 iv.setColorFilter(0xFF000000);
                 iv.setBackgroundColor(dataColor);
             }
-        }
+
 
         if (!navigationShown)
             slideToTop(findViewById(R.id.navigationlayout));
         navigationShown = true;
+    }
+
+    public void storeImageBytes(byte[] image){
+        Log.v("ImageSize", String.valueOf(image.length));
+        Bitmap bmp = null;
+        if (image != null) {
+            bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+            Log.v("bmp", String.valueOf(bmp.getByteCount()));
+            NavIcon = bmp;
+        }
     }
 
     //HIDE NAVIGATION

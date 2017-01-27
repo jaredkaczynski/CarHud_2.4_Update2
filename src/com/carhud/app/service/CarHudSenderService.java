@@ -1,6 +1,7 @@
 package com.carhud.app.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
@@ -524,7 +525,9 @@ public class CarHudSenderService extends Service {
 			String tmp = intent.getStringExtra("notification_event");
 			if (D) Log.w(TAG, "receive: " + tmp);
   	  		byte[] tmpBA = tmp.getBytes();
-  	  		mService.mChatService.write(tmpBA);
+            Log.v("bytesbefore", Arrays.toString(tmpBA));
+			Log.v("bytesbeforeb", String.valueOf(tmpBA.length));
+			mService.mChatService.write(tmpBA);
         }
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -50,6 +51,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.TextPaint;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
@@ -146,7 +148,7 @@ public class Hud extends ActionBarActivity {
 
     Timer timer = new Timer();
 
-    private Bitmap NavIcon = null;
+    private static Bitmap NavIcon = null;
 
     private AdView adView;
     ActionBar ab;
@@ -961,6 +963,10 @@ public class Hud extends ActionBarActivity {
                     break;
                 case MESSAGE_READ:
                     if (D) Log.d(TAG, "message_read()");
+                    Log.v("bytesafter", Arrays.toString((byte[]) msg.obj));
+                    Log.v("bytesafterb", new String((byte[]) msg.obj));
+                    Log.v("bytesafterb", String.valueOf(((byte[]) msg.obj).length));
+
                     byte[] readBuf = (byte[]) msg.obj;
                     String str = new String(readBuf, 0, msg.arg1);
                     StringTokenizer st = new StringTokenizer(str, "~");
@@ -987,6 +993,14 @@ public class Hud extends ActionBarActivity {
                                     }
                                     if (!nextAction.isEmpty())
                                         mActivity.showNavigation(nextAction);
+                                    if (st.hasMoreElements()) {
+                                        ss = st.nextElement().toString();
+                                        if (!ss.isEmpty()) {
+                                            Log.v("Stringafter4", ss);
+                                            NavIcon = StringToBitMap(ss);
+                                            mActivity.showNavigationImage(NavIcon);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1078,6 +1092,22 @@ public class Hud extends ActionBarActivity {
                         mActivity.mChatService.start();
                     break;
             }
+        }
+    }
+
+    /**
+     * @param encodedString
+     * @return bitmap (from given string)
+     */
+    public static Bitmap StringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte= Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            Log.v("StringtoBMP", String.valueOf(bitmap==null));
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
         }
     }
 
@@ -1217,6 +1247,32 @@ public class Hud extends ActionBarActivity {
     }
 
     //SHOW NAVIGATION
+    public void showNavigationImage(Bitmap image) {
+
+        ImageView iv = (ImageView) findViewById(R.id.navigationIcon);
+        //iv.setVisibility(View.GONE);
+
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        dataColor = sharedPrefs.getInt("dataColor", 0xFF33B5E5);
+//		navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        //Log.v("bmp", String.valueOf(bmp.getByteCount()));
+        iv.setImageBitmap(image);
+        iv.setBackgroundColor(0xFF000000);
+        iv.setColorFilter(dataColor);
+        iv.setVisibility(View.VISIBLE);
+//			navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+        if (navigationCloseAlert) {
+            iv.setColorFilter(0xFF000000);
+            iv.setBackgroundColor(dataColor);
+        }
+
+
+        if (!navigationShown)
+            slideToTop(findViewById(R.id.navigationlayout));
+        navigationShown = true;
+    }
+
+    //SHOW NAVIGATION
     public void showNavigation(String ss) {
         if (!navigationShown)
             slideToBottom(findViewById(R.id.mediaotherlayout));
@@ -1239,7 +1295,7 @@ public class Hud extends ActionBarActivity {
                 immediateSwitchNavigation();
         }
 
-		int imageId = -1;
+		/*int imageId = -1;
 
 		if (ss.contains("Image"))
 			imageId = R.drawable.depart;
@@ -1313,7 +1369,7 @@ public class Hud extends ActionBarActivity {
             iv.setImageResource(imageId);
             iv.setBackgroundColor(0xFF000000);
             iv.setColorFilter(dataColor);
-            iv.setVisibility(View.VISIBLE);
+            iv.setVisibility(View.VISIBLE);*/
 //			navigationText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
             if (navigationCloseAlert) {
                 iv.setColorFilter(0xFF000000);

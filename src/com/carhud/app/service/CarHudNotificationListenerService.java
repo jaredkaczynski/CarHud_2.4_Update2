@@ -13,6 +13,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
@@ -55,7 +56,9 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                 BitmapReflectionAction concrete = (BitmapReflectionAction)action;
                 bmp = concrete.getBitmap();
                 Log.v("BMP Size", String.valueOf(bmp.getByteCount()));
-                SaveImage(bmp);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    SaveImage(bmp);
+                }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Notification temp = sbn.getNotification();
@@ -223,14 +226,26 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
 //    		i.putExtra("notification_event","NAVIGATION~" + sbn.getId() + "~POSTED~" + ss + "~");
             //Convert to byte array
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] byteArray = stream.toByteArray();
-            i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");
+            //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            //byte[] byteArray = stream.toByteArray();
+            i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~" + BitMapToString(bmp));
+            Log.v("Stringbefore", BitMapToString(bmp));
 
             //i.putExtra("Image",byteArray);
     		sendBroadcast(i);
     	}
     }
+
+
+    public String BitMapToString(Bitmap bitmap){
+        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+        byte [] b=baos.toByteArray();
+        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+
 
 
     public static long hashBitmap(Bitmap bmp){

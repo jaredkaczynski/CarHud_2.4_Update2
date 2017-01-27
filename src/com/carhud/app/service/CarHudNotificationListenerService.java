@@ -210,7 +210,7 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                     //Split on -
                     String[] BigData = text.get(1).split("-");
                     //Arrival time, Destination
-                    ss  += "\n" + "Estimated arrival at" + BigData[1] + "\n" + "to destination" + BigData[0];
+                    ss  += "\n" + BigData[1] + "\n" + BigData[0];
                 }
             }
 
@@ -222,7 +222,7 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
             bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
 
-            i.putExtra("Image",byteArray);
+            //i.putExtra("Image",byteArray);
     		sendBroadcast(i);
     	}
     }

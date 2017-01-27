@@ -1081,21 +1081,21 @@ public class Hud extends ActionBarActivity {
 
     // To animate view slide out from top to bottom
     public void slideToBottom(View view) {
-        statusHeight = view.getHeight();
+        /*statusHeight = view.getHeight();
         TranslateAnimation animate = new TranslateAnimation(0, 0, 0, statusHeight);
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.GONE);
+        view.setVisibility(View.GONE);*/
     }
 
     // To animate view slide out from bottom to top
     public void slideToTop(View view) {
-        TranslateAnimation animate = new TranslateAnimation(0, 0, statusHeight, 0);
+        /*TranslateAnimation animate = new TranslateAnimation(0, 0, statusHeight, 0);
         animate.setDuration(500);
         animate.setFillAfter(true);
         view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
+        view.setVisibility(View.VISIBLE);*/
     }
 
     //SEE IF CONNECTIONS ARE MADE AND HIDE STATUS BAR IF ALL IS GOOD
@@ -1220,7 +1220,7 @@ public class Hud extends ActionBarActivity {
             slideToBottom(findViewById(R.id.mediaotherlayout));
 
         ImageView iv = (ImageView) findViewById(R.id.navigationIcon);
-        iv.setVisibility(View.GONE);
+        //iv.setVisibility(View.GONE);
 
         TextView navigationText = (TextView) findViewById(R.id.navigationText);
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -1328,11 +1328,11 @@ public class Hud extends ActionBarActivity {
 
     //HIDE NAVIGATION
     public void hideNavigation() {
-        if (navigationShown) {
+        /*if (navigationShown) {
             slideToBottom(findViewById(R.id.navigationlayout));
             slideToTop(findViewById(R.id.mediaotherlayout));
         }
-        navigationShown = false;
+        navigationShown = false;*/
     }
 
     //SET SENDER TEXT

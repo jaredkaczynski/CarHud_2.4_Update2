@@ -106,16 +106,6 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                                 Log.v("reflect1",t);
                                 text.add(t);
                             }
-                            else if (methodName.equals("setString"))
-                            {
-                                // Parameter type (10 = Character Sequence)
-                                parcel.readInt();
-
-                                // Store the actual string
-                                String t = TextUtils.CHAR_SEQUENCE_CREATOR.createFromParcel(parcel).toString();
-                                Log.v("reflect2",t);
-                                text.add(t);
-                            }
                             else if (methodName.equals("setImageBitmap"))
                             {
                                 // Parameter type (10 = Character Sequence)
@@ -216,9 +206,8 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
                     }
                     Log.v("Notification1",text.toString());
                     //Split on -
-                    String[] BigData = text.get(1).split("-");
                     //Arrival time, Destination
-                    ss  += "\n" + BigData[1] + "\n" + BigData[0];
+                    ss  += "\n" + text.get(1).split("-")[1] + "\n" + text.get(0).split("-")[0];
                 }
             }
 

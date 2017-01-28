@@ -238,10 +238,11 @@
                         android:layout_width="match_parent"
                         android:scaleType="fitCenter"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentEnd="false"
                         android:layout_toEndOf="@+id/estArrival"
                         android:cropToPadding="false"
-                        android:adjustViewBounds="true" />
+                        android:adjustViewBounds="true"
+                        android:layout_above="@+id/estDistance" />
 
                     <LinearLayout
                         android:id="@+id/mediaotherlayout"
@@ -252,9 +253,531 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true">
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@id/estDistance"
+                        android:layout_toLeftOf="@id/estDistance">
 
                         <!-- MEDIA INFO -->
+                        <LinearLayout
+                            android:id="@+id/mediaotherlayout"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="bottom"
+                            android:gravity="bottom|left"
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_toStartOf="@id/estDistance"
+                            android:layout_toLeftOf="@+id/estArrival">
+
+                            <!-- MEDIA INFO -->
+                            <TableLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="top">
+
+                                <!-- ARTIST -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/artistTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/artist"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/artist" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/artistText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp"
+                                            android:text="Artist" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- ALBUM -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/albumTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/album"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/album" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/albumText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- TRACK -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/trackTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/track"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/track" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/trackText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp"
+                                            android:text="Song" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- ALTITUDE -->
+                                <TableRow
+                                    android:id="@+id/altitudelayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/altitudeTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/altitudeTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/altitude" />
+
+                                    <TextView
+                                        android:id="@+id/altitudeText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- TEMP -->
+                                <TableRow
+                                    android:id="@+id/localtemplayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/localtempTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/localtempTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/temp" />
+
+                                    <TextView
+                                        android:id="@+id/localtempText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- TIME -->
+                                <TableRow
+                                    android:id="@+id/timelayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/timeTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/timeTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/time" />
+
+                                    <TextView
+                                        android:id="@+id/timeText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- BATTERY -->
+                                <TableRow
+                                    android:id="@+id/batterylayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/batteryTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/batteryTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/bat" />
+
+                                    <TextView
+                                        android:id="@+id/batteryText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="25sp" />
+                                </TableRow>
+
+                                <!-- COOLANT -->
+                                <TableRow
+                                    android:id="@+id/coolantlayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/coolantTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/coolantTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/temp" />
+
+                                    <TextView
+                                        android:id="@+id/coolantText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="25sp" />
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/mediaotherlayout"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="bottom"
+                            android:gravity="bottom|left"
+                            android:orientation="horizontal"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_toStartOf="@id/estDistance"
+                            android:layout_toLeftOf="@+id/estArrival">
+
+                            <!-- MEDIA INFO -->
+                            <TableLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="top">
+
+                                <!-- ARTIST -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/artistTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/artist"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/artist" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/artistText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp"
+                                            android:text="Artist" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- ALBUM -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/albumTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/album"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/album" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/albumText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- TRACK -->
+                                <TableRow
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <ImageView
+                                        android:id="@+id/trackTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/track"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/track" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:gravity="center">
+
+                                        <TextView
+                                            android:id="@+id/trackText"
+                                            android:layout_width="10000dp"
+                                            android:layout_height="match_parent"
+                                            android:ellipsize="none"
+                                            android:gravity="left|center_vertical"
+                                            android:marqueeRepeatLimit="-1"
+                                            android:singleLine="true"
+                                            android:textColor="#33B5E5"
+                                            android:textSize="30sp"
+                                            android:text="Song" />
+                                    </LinearLayout>
+                                </TableRow>
+
+                                <!-- ALTITUDE -->
+                                <TableRow
+                                    android:id="@+id/altitudelayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/altitudeTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/altitudeTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/altitude" />
+
+                                    <TextView
+                                        android:id="@+id/altitudeText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- TEMP -->
+                                <TableRow
+                                    android:id="@+id/localtemplayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/localtempTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/localtempTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/temp" />
+
+                                    <TextView
+                                        android:id="@+id/localtempText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- TIME -->
+                                <TableRow
+                                    android:id="@+id/timelayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/timeTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/timeTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/time" />
+
+                                    <TextView
+                                        android:id="@+id/timeText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="12sp" />
+                                </TableRow>
+
+                                <!-- BATTERY -->
+                                <TableRow
+                                    android:id="@+id/batterylayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/batteryTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/batteryTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/bat" />
+
+                                    <TextView
+                                        android:id="@+id/batteryText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="25sp" />
+                                </TableRow>
+
+                                <!-- COOLANT -->
+                                <TableRow
+                                    android:id="@+id/coolantlayout"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:visibility="gone">
+
+                                    <ImageView
+                                        android:id="@+id/coolantTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:contentDescription="@string/coolantTitle"
+                                        android:gravity="right|center_vertical"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/temp" />
+
+                                    <TextView
+                                        android:id="@+id/coolantText"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="25sp" />
+                                </TableRow>
+                            </TableLayout>
+                        </LinearLayout>
+
                         <TableLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -506,16 +1029,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Destination"
+                        android:text="Distance to Turn"
                         android:textColor="#33B5E5"
                         android:textSize="25sp"
                         android:layout_alignWithParentIfMissing="false"
-                        android:paddingRight="20sp"
-                        android:layout_above="@+id/mediaotherlayout"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentStart="false"
-                        android:layout_toLeftOf="@+id/estArrival"
-                        android:visibility="gone" />
+                        android:visibility="visible"
+                        android:layout_alignParentEnd="false"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@id/estArrival" />
 
                     <TextView
                         android:id="@+id/estArrival"

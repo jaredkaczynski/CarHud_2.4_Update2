@@ -8,7 +8,83 @@
 	android:orientation="vertical"
  	android:background="#000000">
 
-	<!--  MAIN DISPLAY -->
+	<!-- BOTTOM BAR -->
+	<LinearLayout
+		android:id="@+id/statusBar"
+		android:layout_width="match_parent"
+		android:layout_height="30dp"
+		android:background="#101010"
+		android:gravity="center"
+		android:orientation="horizontal"
+		android:visibility="gone">
+
+		<!-- SENDER CONNECTION -->
+		<TextView
+			android:id="@+id/senderConnectionTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:paddingRight="5sp"
+			android:text="@string/senderConnectionTitle"
+			android:textColor="#33B5E5"
+			android:textSize="15sp"
+			android:visibility="gone" />
+
+		<ImageView
+			android:id="@+id/senderConnection"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:contentDescription="@string/senderConnectionTitle"
+			android:gravity="center"
+			android:paddingRight="20sp"
+			android:src="@drawable/notconnected"
+			android:visibility="gone" />
+
+		<!-- COBRA CONNECTION -->
+		<TextView
+			android:id="@+id/cobraConnectionTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:paddingRight="5sp"
+			android:text="@string/cobraConnectionTitle"
+			android:textColor="#33B5E5"
+			android:textSize="15sp"
+			android:visibility="gone" />
+
+		<ImageView
+			android:id="@+id/cobraConnection"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:contentDescription="@string/cobraConnectionTitle"
+			android:gravity="center"
+			android:paddingRight="20sp"
+			android:src="@drawable/notconnected"
+			android:visibility="gone" />
+
+		<!-- OBD CONNECTION -->
+		<TextView
+			android:id="@+id/obdConnectionTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:gravity="center"
+			android:paddingRight="5sp"
+			android:text="@string/obdConnectionTitle"
+			android:textColor="#33B5E5"
+			android:textSize="15sp"
+			android:visibility="gone" />
+
+		<ImageView
+			android:id="@+id/obdConnection"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:contentDescription="@string/obdConnectionTitle"
+			android:gravity="center"
+			android:paddingRight="20sp"
+			android:src="@drawable/notconnected"
+			android:visibility="gone" />
+	</LinearLayout>
+
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -114,339 +190,348 @@
 				android:layout_weight=".8"
 				android:orientation="vertical">
 
-				<LinearLayout
+				<RelativeLayout
 					android:layout_width="match_parent"
 					android:layout_height="0dp"
-					android:layout_weight=".8"
-					android:orientation="vertical">
+					android:layout_weight=".8">
 
 					<TextView
 						android:id="@+id/navigationText"
 						android:layout_width="match_parent"
-						android:layout_height="0dp"
+						android:layout_height="wrap_content"
 						android:layout_weight=".2"
 						android:gravity="center"
-						android:paddingBottom="15dp"
-						android:text="NAvigate Here"
+						android:text="Road towards Road"
 						android:textColor="#33B5E5"
-						android:textSize="30sp" />
+						android:textSize="30sp"
+						android:layout_alignParentTop="true"
+						android:layout_toLeftOf="@+id/navigationIcon" />
+
+					<TextView
+						android:id="@+id/speedText"
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent"
+						android:gravity="center"
+						android:includeFontPadding="false"
+						android:lineSpacingExtra="0dp"
+						android:lineSpacingMultiplier="1"
+						android:maxLines="1"
+						android:paddingBottom="0dp"
+						android:paddingTop="0dp"
+						android:textColor="#33B5E5"
+						android:textSize="90sp"
+						android:typeface="monospace"
+						android:text="66"
+						android:layout_below="@+id/navigationText"
+						android:layout_above="@+id/mediaotherlayout" />
+
+					<ImageView
+						android:id="@+id/navigationIcon"
+						android:layout_height="match_parent"
+						android:contentDescription="@string/navigationIcon"
+						android:gravity="center"
+						android:src="@drawable/roundabout_5"
+						android:visibility="visible"
+						android:minWidth="70sp"
+						android:layout_width="match_parent"
+						android:scaleType="fitCenter"
+						android:layout_alignParentRight="true"
+						android:layout_alignParentEnd="false"
+						android:layout_toEndOf="@+id/estArrival"
+						android:cropToPadding="false"
+						android:adjustViewBounds="true"
+						android:layout_above="@+id/estDistance" />
 
 					<LinearLayout
+						android:id="@+id/mediaotherlayout"
 						android:layout_width="match_parent"
-						android:layout_height="0dp"
-						android:layout_weight=".7"
-						android:orientation="horizontal">
-						<!-- SPEEDOMETER -->
-						<TextView
-							android:id="@+id/speedText"
-							android:layout_width="0dp"
-							android:layout_height="match_parent"
-							android:layout_marginBottom="0dp"
-							android:layout_marginTop="0dp"
-							android:layout_weight=".2"
-							android:gravity="center"
-							android:includeFontPadding="false"
-							android:lineSpacingExtra="0dp"
-							android:lineSpacingMultiplier="1"
-							android:maxLines="1"
-							android:paddingBottom="0dp"
-							android:paddingTop="0dp"
-							android:textColor="#33B5E5"
-							android:textSize="12sp"
-							android:typeface="monospace" />
-
-						<ImageView
-							android:id="@+id/navigationIcon"
-							android:layout_width="0dp"
-							android:layout_height="match_parent"
-							android:layout_weight=".8"
-							android:contentDescription="@string/navigationIcon"
-							android:gravity="center"
-							android:src="@drawable/unknown"
-							android:visibility="visible" />
-					</LinearLayout>
-
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="0dp"
 						android:layout_gravity="bottom"
-						android:layout_weight=".1"
-						android:orientation="horizontal">
+						android:gravity="bottom|left"
+						android:orientation="horizontal"
+						android:layout_height="wrap_content"
+						android:layout_alignParentBottom="true"
+						android:layout_alignParentLeft="true"
+						android:layout_alignParentStart="true"
+						android:layout_toStartOf="@id/estDistance"
+						android:layout_toLeftOf="@id/estDistance">
 
-						<TextView
-							android:id="@+id/estArrival"
+						<!-- MEDIA INFO -->
+						<TableLayout
 							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:gravity="center"
-							android:text="7:15"
-							android:textColor="#33B5E5"
-							android:textSize="12sp" />
+							android:layout_height="match_parent"
+							android:gravity="top">
 
-						<TextView
-							android:id="@+id/estDistance"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:gravity="center"
-							android:text="10 miles"
-							android:textColor="#33B5E5"
-							android:textSize="12sp" />
+							<!-- ARTIST -->
+							<TableRow
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content">
+
+								<ImageView
+									android:id="@+id/artistTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/artist"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/artist" />
+
+								<LinearLayout
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:gravity="center">
+
+									<TextView
+										android:id="@+id/artistText"
+										android:layout_width="10000dp"
+										android:layout_height="match_parent"
+										android:ellipsize="none"
+										android:gravity="left|center_vertical"
+										android:marqueeRepeatLimit="-1"
+										android:singleLine="true"
+										android:textColor="#33B5E5"
+										android:textSize="30sp"
+										android:text="Artist" />
+								</LinearLayout>
+							</TableRow>
+
+							<!-- ALBUM -->
+							<TableRow
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/albumTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/album"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/album" />
+
+								<LinearLayout
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:gravity="center">
+
+									<TextView
+										android:id="@+id/albumText"
+										android:layout_width="10000dp"
+										android:layout_height="match_parent"
+										android:ellipsize="none"
+										android:gravity="left|center_vertical"
+										android:marqueeRepeatLimit="-1"
+										android:singleLine="true"
+										android:textColor="#33B5E5"
+										android:textSize="30sp" />
+								</LinearLayout>
+							</TableRow>
+
+							<!-- TRACK -->
+							<TableRow
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content">
+
+								<ImageView
+									android:id="@+id/trackTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/track"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/track" />
+
+								<LinearLayout
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:gravity="center">
+
+									<TextView
+										android:id="@+id/trackText"
+										android:layout_width="10000dp"
+										android:layout_height="match_parent"
+										android:ellipsize="none"
+										android:gravity="left|center_vertical"
+										android:marqueeRepeatLimit="-1"
+										android:singleLine="true"
+										android:textColor="#33B5E5"
+										android:textSize="30sp"
+										android:text="Song" />
+								</LinearLayout>
+							</TableRow>
+
+							<!-- ALTITUDE -->
+							<TableRow
+								android:id="@+id/altitudelayout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/altitudeTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/altitudeTitle"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/altitude" />
+
+								<TextView
+									android:id="@+id/altitudeText"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:ellipsize="none"
+									android:gravity="left|center_vertical"
+									android:marqueeRepeatLimit="-1"
+									android:singleLine="true"
+									android:textColor="#33B5E5"
+									android:textSize="12sp" />
+							</TableRow>
+
+							<!-- TEMP -->
+							<TableRow
+								android:id="@+id/localtemplayout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/localtempTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/localtempTitle"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/temp" />
+
+								<TextView
+									android:id="@+id/localtempText"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:ellipsize="none"
+									android:gravity="left|center_vertical"
+									android:marqueeRepeatLimit="-1"
+									android:singleLine="true"
+									android:textColor="#33B5E5"
+									android:textSize="12sp" />
+							</TableRow>
+
+							<!-- TIME -->
+							<TableRow
+								android:id="@+id/timelayout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/timeTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/timeTitle"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/time" />
+
+								<TextView
+									android:id="@+id/timeText"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:ellipsize="none"
+									android:gravity="left|center_vertical"
+									android:marqueeRepeatLimit="-1"
+									android:singleLine="true"
+									android:textColor="#33B5E5"
+									android:textSize="12sp" />
+							</TableRow>
+
+							<!-- BATTERY -->
+							<TableRow
+								android:id="@+id/batterylayout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/batteryTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/batteryTitle"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/bat" />
+
+								<TextView
+									android:id="@+id/batteryText"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:ellipsize="none"
+									android:gravity="left|center_vertical"
+									android:marqueeRepeatLimit="-1"
+									android:singleLine="true"
+									android:textColor="#33B5E5"
+									android:textSize="25sp" />
+							</TableRow>
+
+							<!-- COOLANT -->
+							<TableRow
+								android:id="@+id/coolantlayout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:visibility="gone">
+
+								<ImageView
+									android:id="@+id/coolantTitle"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:contentDescription="@string/coolantTitle"
+									android:gravity="right|center_vertical"
+									android:scaleType="fitCenter"
+									android:src="@drawable/temp" />
+
+								<TextView
+									android:id="@+id/coolantText"
+									android:layout_width="match_parent"
+									android:layout_height="match_parent"
+									android:ellipsize="none"
+									android:gravity="left|center_vertical"
+									android:marqueeRepeatLimit="-1"
+									android:singleLine="true"
+									android:textColor="#33B5E5"
+									android:textSize="25sp" />
+							</TableRow>
+						</TableLayout>
 
 					</LinearLayout>
-				</LinearLayout>
 
-			</LinearLayout>
-
-			<LinearLayout
-				android:id="@+id/mediaotherlayout"
-				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_gravity="bottom"
-				android:layout_weight=".3"
-				android:gravity="bottom|left"
-				android:orientation="horizontal">
-
-				<!-- MEDIA INFO -->
-				<TableLayout
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:gravity="top">
-
-					<!-- ARTIST -->
-					<TableRow
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content">
-
-						<ImageView
-							android:id="@+id/artistTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/artist"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/artist" />
-
-						<LinearLayout
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:gravity="center">
-
-							<TextView
-								android:id="@+id/artistText"
-								android:layout_width="10000dp"
-								android:layout_height="match_parent"
-								android:ellipsize="none"
-								android:gravity="left|center_vertical"
-								android:marqueeRepeatLimit="-1"
-								android:singleLine="true"
-								android:textColor="#33B5E5"
-								android:textSize="12sp" />
-						</LinearLayout>
-					</TableRow>
-
-					<!-- ALBUM -->
-					<TableRow
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content">
-
-						<ImageView
-							android:id="@+id/albumTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/album"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/album" />
-
-						<LinearLayout
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:gravity="center">
-
-							<TextView
-								android:id="@+id/albumText"
-								android:layout_width="10000dp"
-								android:layout_height="match_parent"
-								android:ellipsize="none"
-								android:gravity="left|center_vertical"
-								android:marqueeRepeatLimit="-1"
-								android:singleLine="true"
-								android:textColor="#33B5E5"
-								android:textSize="12sp" />
-						</LinearLayout>
-					</TableRow>
-
-					<!-- TRACK -->
-					<TableRow
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content">
-
-						<ImageView
-							android:id="@+id/trackTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/track"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/track" />
-
-						<LinearLayout
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:gravity="center">
-
-							<TextView
-								android:id="@+id/trackText"
-								android:layout_width="10000dp"
-								android:layout_height="match_parent"
-								android:ellipsize="none"
-								android:gravity="left|center_vertical"
-								android:marqueeRepeatLimit="-1"
-								android:singleLine="true"
-								android:textColor="#33B5E5"
-								android:textSize="12sp" />
-						</LinearLayout>
-					</TableRow>
-
-					<!-- ALTITUDE -->
-					<TableRow
-						android:id="@+id/altitudelayout"
+					<TextView
+						android:id="@+id/estDistance"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:visibility="gone">
+						android:gravity="center"
+						android:text="Distance to Turn"
+						android:textColor="#33B5E5"
+						android:textSize="25sp"
+						android:layout_alignWithParentIfMissing="false"
+						android:visibility="visible"
+						android:layout_alignParentEnd="false"
+						android:layout_alignParentBottom="true"
+						android:layout_toRightOf="@id/estArrival" />
 
-						<ImageView
-							android:id="@+id/altitudeTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/altitudeTitle"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/altitude" />
-
-						<TextView
-							android:id="@+id/altitudeText"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:ellipsize="none"
-							android:gravity="left|center_vertical"
-							android:marqueeRepeatLimit="-1"
-							android:singleLine="true"
-							android:textColor="#33B5E5"
-							android:textSize="12sp" />
-					</TableRow>
-
-					<!-- TEMP -->
-					<TableRow
-						android:id="@+id/localtemplayout"
-						android:layout_width="match_parent"
+					<TextView
+						android:id="@+id/estArrival"
+						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:visibility="gone">
+						android:gravity="center"
+						android:text="7:15"
+						android:textColor="#33B5E5"
+						android:textSize="25sp"
+						android:layout_alignWithParentIfMissing="true"
+						android:layout_centerInParent="false"
+						android:layout_above="@+id/mediaotherlayout"
+						android:layout_centerHorizontal="true" />
 
-						<ImageView
-							android:id="@+id/localtempTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/localtempTitle"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/temp" />
+				</RelativeLayout>
 
-						<TextView
-							android:id="@+id/localtempText"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:ellipsize="none"
-							android:gravity="left|center_vertical"
-							android:marqueeRepeatLimit="-1"
-							android:singleLine="true"
-							android:textColor="#33B5E5"
-							android:textSize="12sp" />
-					</TableRow>
-
-					<!-- TIME -->
-					<TableRow
-						android:id="@+id/timelayout"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:visibility="gone">
-
-						<ImageView
-							android:id="@+id/timeTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/timeTitle"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/time" />
-
-						<TextView
-							android:id="@+id/timeText"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:ellipsize="none"
-							android:gravity="left|center_vertical"
-							android:marqueeRepeatLimit="-1"
-							android:singleLine="true"
-							android:textColor="#33B5E5"
-							android:textSize="12sp" />
-					</TableRow>
-
-					<!-- BATTERY -->
-					<TableRow
-						android:id="@+id/batterylayout"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:visibility="gone">
-
-						<ImageView
-							android:id="@+id/batteryTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/batteryTitle"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/bat" />
-
-						<TextView
-							android:id="@+id/batteryText"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:ellipsize="none"
-							android:gravity="left|center_vertical"
-							android:marqueeRepeatLimit="-1"
-							android:singleLine="true"
-							android:textColor="#33B5E5"
-							android:textSize="25sp" />
-					</TableRow>
-
-					<!-- COOLANT -->
-					<TableRow
-						android:id="@+id/coolantlayout"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:visibility="gone">
-
-						<ImageView
-							android:id="@+id/coolantTitle"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:contentDescription="@string/coolantTitle"
-							android:gravity="right|center_vertical"
-							android:scaleType="fitCenter"
-							android:src="@drawable/temp" />
-
-						<TextView
-							android:id="@+id/coolantText"
-							android:layout_width="match_parent"
-							android:layout_height="match_parent"
-							android:ellipsize="none"
-							android:gravity="left|center_vertical"
-							android:marqueeRepeatLimit="-1"
-							android:singleLine="true"
-							android:textColor="#33B5E5"
-							android:textSize="25sp" />
-					</TableRow>
-				</TableLayout>
 			</LinearLayout>
 
 		</LinearLayout>
@@ -455,81 +540,5 @@
 
 		<!--  NAVIGATION DISPLAY -->
 
-	</LinearLayout>
-
-	<!-- BOTTOM BAR -->
-	<LinearLayout
-		android:id="@+id/statusBar"
-		android:layout_width="match_parent"
-		android:layout_height="30dp"
-		android:background="#101010"
-		android:gravity="center"
-		android:orientation="horizontal">
-
-		<!-- SENDER CONNECTION -->
-		<TextView
-			android:id="@+id/senderConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="5sp"
-			android:text="@string/senderConnectionTitle"
-			android:textColor="#33B5E5"
-			android:textSize="15sp"
-			android:visibility="gone" />
-
-		<ImageView
-			android:id="@+id/senderConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:contentDescription="@string/senderConnectionTitle"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:src="@drawable/notconnected"
-			android:visibility="gone" />
-
-		<!-- COBRA CONNECTION -->
-		<TextView
-			android:id="@+id/cobraConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="5sp"
-			android:text="@string/cobraConnectionTitle"
-			android:textColor="#33B5E5"
-			android:textSize="15sp"
-			android:visibility="gone" />
-
-		<ImageView
-			android:id="@+id/cobraConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:contentDescription="@string/cobraConnectionTitle"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:src="@drawable/notconnected"
-			android:visibility="gone" />
-
-		<!-- OBD CONNECTION -->
-		<TextView
-			android:id="@+id/obdConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="5sp"
-			android:text="@string/obdConnectionTitle"
-			android:textColor="#33B5E5"
-			android:textSize="15sp"
-			android:visibility="gone" />
-
-		<ImageView
-			android:id="@+id/obdConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:contentDescription="@string/obdConnectionTitle"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:src="@drawable/notconnected"
-			android:visibility="gone" />
 	</LinearLayout>
 </com.carhud.app.views.MirroredLinearLayout>

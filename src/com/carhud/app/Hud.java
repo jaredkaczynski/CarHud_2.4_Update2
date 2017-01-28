@@ -538,15 +538,15 @@ public class Hud extends ActionBarActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
         //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mirror = sharedPrefs.getBoolean("mirror", false);
-        if (mirror)
+        if (mirror) {
             setContentView(R.layout.hud_display_mirror);
-        else
+        } else {
             setContentView(R.layout.hud_display);
+        }
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -675,17 +675,20 @@ public class Hud extends ActionBarActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         senderNeeded = true;
         BluetoothAdapter.getDefaultAdapter().enable();
         //SEE IF SCREEN NEEDS MIRRORED AND DRAW SCREEN
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mirror = sharedPrefs.getBoolean("mirror", false);
-        if (mirror)
+        if (mirror) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
             setContentView(R.layout.hud_display_mirror);
-        else
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             setContentView(R.layout.hud_display);
+        }
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();

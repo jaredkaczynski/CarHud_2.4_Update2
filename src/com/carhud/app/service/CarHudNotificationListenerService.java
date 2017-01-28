@@ -217,8 +217,13 @@ public class CarHudNotificationListenerService extends NotificationListenerServi
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
             //byte[] byteArray = stream.toByteArray();
-            i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~" + BitMapToString(bmp));
-            Log.v("Stringbefore", BitMapToString(bmp));
+            if(bmp != null){
+                String bitmap = BitMapToString(bmp);
+                i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~" + bitmap);
+                Log.v("Stringbefore", bitmap);
+            } else {
+                i.putExtra("notification_event","NAVIGATION~POSTED~" + ss + "~");
+            }
 
             //i.putExtra("Image",byteArray);
     		sendBroadcast(i);

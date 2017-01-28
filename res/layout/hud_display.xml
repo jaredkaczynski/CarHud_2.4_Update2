@@ -9,6 +9,84 @@
     android:orientation="vertical">
 
     <!--  MAIN DISPLAY -->
+
+    <!-- BOTTOM BAR -->
+    <LinearLayout
+        android:id="@+id/statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#101010"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <!-- SENDER CONNECTION -->
+        <TextView
+            android:id="@+id/senderConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/senderConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/senderConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/senderConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
+
+        <!-- COBRA CONNECTION -->
+        <TextView
+            android:id="@+id/cobraConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/cobraConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/cobraConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cobraConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
+
+        <!-- OBD CONNECTION -->
+        <TextView
+            android:id="@+id/obdConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/obdConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/obdConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/obdConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -125,44 +203,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight=".2"
                         android:gravity="center"
-                        android:text="NAvigate Here"
+                        android:text="Road towards Road"
                         android:textColor="#33B5E5"
                         android:textSize="30sp"
                         android:layout_alignParentTop="true"
                         android:layout_toLeftOf="@+id/navigationIcon" />
 
                     <TextView
-                        android:id="@+id/estArrival"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="7:15"
-                        android:textColor="#33B5E5"
-                        android:textSize="25sp"
-                        android:layout_below="@+id/speedText"
-                        android:layout_centerHorizontal="false"
-                        android:layout_toRightOf="@+id/estDistance"
-                        android:layout_centerInParent="true" />
-
-                    <TextView
-                        android:id="@+id/estDistance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="10 miles"
-                        android:textColor="#33B5E5"
-                        android:textSize="25sp"
-                        android:layout_alignWithParentIfMissing="true"
-                        android:paddingRight="20sp"
-                        android:layout_alignBaseline="@+id/estArrival"
-                        android:layout_alignBottom="@+id/estArrival"
-                        android:layout_centerHorizontal="true" />
-
-                    <TextView
                         android:id="@+id/speedText"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".2"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:includeFontPadding="false"
                         android:lineSpacingExtra="0dp"
@@ -174,7 +224,8 @@
                         android:textSize="90sp"
                         android:typeface="monospace"
                         android:text="66"
-                        android:layout_below="@+id/navigationText" />
+                        android:layout_below="@+id/navigationText"
+                        android:layout_above="@+id/mediaotherlayout" />
 
                     <ImageView
                         android:id="@+id/navigationIcon"
@@ -184,21 +235,24 @@
                         android:src="@drawable/roundabout_5"
                         android:visibility="visible"
                         android:minWidth="70sp"
-                        android:layout_width="wrap_content"
-                        android:scaleType="centerInside"
-                        android:layout_alignBottom="@+id/estArrival"
+                        android:layout_width="match_parent"
+                        android:scaleType="fitCenter"
                         android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true" />
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/estArrival"
+                        android:cropToPadding="false"
+                        android:adjustViewBounds="true" />
 
                     <LinearLayout
                         android:id="@+id/mediaotherlayout"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
                         android:layout_gravity="bottom"
-                        android:layout_weight=".3"
                         android:gravity="bottom|left"
                         android:orientation="horizontal"
-                        android:layout_below="@+id/estDistance">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true">
 
                         <!-- MEDIA INFO -->
                         <TableLayout
@@ -234,7 +288,8 @@
                                         android:marqueeRepeatLimit="-1"
                                         android:singleLine="true"
                                         android:textColor="#33B5E5"
-                                        android:textSize="30sp" />
+                                        android:textSize="30sp"
+                                        android:text="Artist" />
                                 </LinearLayout>
                             </TableRow>
 
@@ -299,7 +354,8 @@
                                         android:marqueeRepeatLimit="-1"
                                         android:singleLine="true"
                                         android:textColor="#33B5E5"
-                                        android:textSize="30sp" />
+                                        android:textSize="30sp"
+                                        android:text="Song" />
                                 </LinearLayout>
                             </TableRow>
 
@@ -445,6 +501,35 @@
                         </TableLayout>
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/estDistance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Destination"
+                        android:textColor="#33B5E5"
+                        android:textSize="25sp"
+                        android:layout_alignWithParentIfMissing="false"
+                        android:paddingRight="20sp"
+                        android:layout_above="@+id/mediaotherlayout"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_toLeftOf="@+id/estArrival"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/estArrival"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="7:15"
+                        android:textColor="#33B5E5"
+                        android:textSize="25sp"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerInParent="false"
+                        android:layout_above="@+id/mediaotherlayout"
+                        android:layout_centerHorizontal="true" />
+
                 </RelativeLayout>
 
             </LinearLayout>
@@ -455,82 +540,5 @@
 
         <!--  NAVIGATION DISPLAY -->
 
-    </LinearLayout>
-
-    <!-- BOTTOM BAR -->
-    <LinearLayout
-        android:id="@+id/statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="#101010"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <!-- SENDER CONNECTION -->
-        <TextView
-            android:id="@+id/senderConnectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingRight="5sp"
-            android:text="@string/senderConnectionTitle"
-            android:textColor="#33B5E5"
-            android:textSize="15sp"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/senderConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/senderConnectionTitle"
-            android:gravity="center"
-            android:paddingRight="20sp"
-            android:src="@drawable/notconnected"
-            android:visibility="gone" />
-
-        <!-- COBRA CONNECTION -->
-        <TextView
-            android:id="@+id/cobraConnectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingRight="5sp"
-            android:text="@string/cobraConnectionTitle"
-            android:textColor="#33B5E5"
-            android:textSize="15sp"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/cobraConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/cobraConnectionTitle"
-            android:gravity="center"
-            android:paddingRight="20sp"
-            android:src="@drawable/notconnected"
-            android:visibility="gone" />
-
-        <!-- OBD CONNECTION -->
-        <TextView
-            android:id="@+id/obdConnectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingRight="5sp"
-            android:text="@string/obdConnectionTitle"
-            android:textColor="#33B5E5"
-            android:textSize="15sp"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/obdConnection"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/obdConnectionTitle"
-            android:gravity="center"
-            android:paddingRight="20sp"
-            android:src="@drawable/notconnected"
-            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

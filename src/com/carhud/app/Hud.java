@@ -352,10 +352,10 @@ public class Hud extends ActionBarActivity {
             rpmtextlabellayout.setPadding(0, padding, 0, padding);
             //RPM TEXT
             TextView rpmText = (TextView) findViewById(R.id.rpmText);
-            sizeTextView(rpmText, "7000");
+            //sizeTextView(rpmText, "7000");
             //RPM LABEL
             TextView rpmTextLabel = (TextView) findViewById(R.id.rpmTextLabel);
-            rpmTextLabel.setTextSize(mediaFont);
+            //rpmTextLabel.setTextSize(mediaFont);
 
             //RPM BAR
             LinearLayout rpmgaugelayout = (LinearLayout) findViewById(R.id.rpmgaugelayout);
@@ -372,13 +372,13 @@ public class Hud extends ActionBarActivity {
 
             //ARTIST TEXT
             TextView artistText = (TextView) findViewById(R.id.artistText);
-            artistText.setTextSize(mediaFont);
+            //artistText.setTextSize(mediaFont);
             //ALBUM TEXT
             TextView albumText = (TextView) findViewById(R.id.albumText);
-            albumText.setTextSize(mediaFont);
+            //albumText.setTextSize(mediaFont);
             //TRACK TEXT
             TextView trackText = (TextView) findViewById(R.id.trackText);
-            trackText.setTextSize(mediaFont);
+            //trackText.setTextSize(mediaFont);
             //GET VALUES BASED OFF ARTIST HEIGHT
             artistText.measure(0, 0);
             int iconHeight = Math.round(artistText.getMeasuredHeight());
@@ -398,27 +398,26 @@ public class Hud extends ActionBarActivity {
 
             //NAVIGATION TEXT
             TextView navigationText = (TextView) findViewById(R.id.navigationText);
-            navigationText.setTextSize(mediaFont);
+            //navigationText.setTextSize(mediaFont);
             //NAVIGATION ICON
             ImageView navigationIcon = (ImageView) findViewById(R.id.navigationIcon);
-            navigationIcon.setLayoutParams(new TableRow.LayoutParams(Math.round(iconHeight * 2.25f), Math.round(iconHeight * 2.25f)));
-            navigationIcon.setPadding(padding2, padding2, padding2, padding2);
+
             //ESTIMATED ARRIVAL
             TextView estArrival = (TextView) findViewById(R.id.estArrival);
-            estArrival.setTextSize(smallerFont);
+            //estArrival.setTextSize(smallerFont);
             //EXTIMATED DISTANCE
             TextView estDistance = (TextView) findViewById(R.id.estDistance);
-            estDistance.setTextSize(smallerFont);
+            //estDistance.setTextSize(smallerFont);
 
             //ALTITIDE TEXT
             TextView altitudeText = (TextView) findViewById(R.id.altitudeText);
-            altitudeText.setTextSize(mediaFont);
+            //altitudeText.setTextSize(mediaFont);
             //TEMP TEXT
             TextView localtempText = (TextView) findViewById(R.id.localtempText);
-            localtempText.setTextSize(mediaFont);
+            //localtempText.setTextSize(mediaFont);
             //TIME TEXT
             TextView timeText = (TextView) findViewById(R.id.timeText);
-            timeText.setTextSize(mediaFont);
+            //timeText.setTextSize(mediaFont);
             //ALTITUDE ICON
             ImageView altitudeTitle = (ImageView) findViewById(R.id.altitudeTitle);
             altitudeTitle.setLayoutParams(new TableRow.LayoutParams(iconHeight, iconHeight));

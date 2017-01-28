@@ -1,512 +1,536 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--  OUTERMOST LAYOUT -->
-<LinearLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:background="#000000">
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical">
 
-	<!--  MAIN DISPLAY -->
+    <!--  MAIN DISPLAY -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <!-- SPEEDOMETER AND RPM -->
-<LinearLayout
-android:id="@+id/speedorpmlayout"
-android:layout_width="0dp"
-android:layout_height="match_parent"
-android:gravity="center"
-android:layout_gravity="center"
-android:layout_weight=".0"
-android:orientation="vertical">
-
-<!--  RPM TEXT AND GAUGE-->
-<LinearLayout
-android:id="@+id/rpmtextandgaugelayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:visibility="gone">
-
-<!--  RPM TEXT AND LABEL -->
-<LinearLayout
-android:id="@+id/rpmtextlabellayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal"
-android:visibility="gone">
-
-<!--  RPM TEXT -->
-<TextView
-android:id="@+id/rpmText"
-android:layout_width="0dp"
-android:layout_height="match_parent"
-android:textColor="#33B5E5"
-android:typeface="monospace"
-android:layout_weight=".65"
-android:maxLines="1"
-android:textSize="12sp"
-android:includeFontPadding="false"
-android:lineSpacingMultiplier="1"
-android:lineSpacingExtra="0dp"
-android:paddingTop="0dp"
-android:paddingBottom="0dp"
-android:layout_marginTop="0dp"
-android:layout_marginBottom="0dp"
-android:gravity="right|center_vertical" />
-
-<!--  RPM LABEL -->
-<TextView
-android:id="@+id/rpmTextLabel"
-android:layout_width="0dp"
-android:layout_height="match_parent"
-android:textColor="#33B5E5"
-android:typeface="monospace"
-android:layout_weight=".35"
-android:maxLines="1"
-android:includeFontPadding="false"
-android:lineSpacingMultiplier="1"
-android:lineSpacingExtra="0dp"
-android:paddingTop="0dp"
-android:paddingBottom="0dp"
-android:layout_marginTop="0dp"
-android:layout_marginBottom="0dp"
-android:text="RPM"
-android:textSize="12dp"
-android:gravity="left|center_vertical" />
-</LinearLayout>
-
-<!-- RPM GAUGE -->
-<LinearLayout
-android:id="@+id/rpmgaugelayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:visibility="gone">
-
-<!-- RPM GAUGE -->
-<com.carhud.app.views.GaugeLinearLayout
-android:id="@+id/gauge"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="#000000"/>
-</LinearLayout>
-</LinearLayout>
-
-</LinearLayout>
-
-<LinearLayout
-android:orientation="vertical"
-android:layout_height="match_parent"
-android:gravity="center"
-android:layout_weight=".6"
-android:layout_width="0dp">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".8"
-        android:id="@+id/navigationlayout">
-
-		<LinearLayout
-			android:orientation="vertical"
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight=".8">
-
-			<TextView
-        android:id="@+id/navigationText"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:textColor="#33B5E5"
-        android:paddingBottom="15dp"
-        android:textSize="30sp"
-            android:text="NAvigate Here"
-				android:layout_weight=".2" />
-
-			<LinearLayout
-				android:orientation="horizontal"
-				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight=".7">
-				<!-- SPEEDOMETER -->
-				<TextView
-					android:id="@+id/speedText"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:textColor="#33B5E5"
-					android:typeface="monospace"
-					android:maxLines="1"
-					android:includeFontPadding="false"
-					android:lineSpacingMultiplier="1"
-					android:lineSpacingExtra="0dp"
-					android:paddingTop="0dp"
-					android:paddingBottom="0dp"
-					android:layout_marginTop="0dp"
-					android:layout_marginBottom="0dp"
-					android:textSize="12sp"
-					android:gravity="center" />
-				<ImageView
-            android:id="@+id/navigationIcon"
-					android:layout_height="match_parent"
+        <LinearLayout
+            android:id="@+id/speedorpmlayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight=".0"
             android:gravity="center"
-            android:contentDescription="@string/navigationIcon"
-            android:visibility="visible"
-            android:src="@drawable/unknown"
-                    android:layout_weight=".7"
-					android:layout_width="0dp" />
-			</LinearLayout>
+            android:orientation="vertical">
 
-			<LinearLayout
-				android:orientation="horizontal"
-				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_gravity="bottom"
-				android:layout_weight=".1">
-
-				<TextView
-    android:id="@+id/estArrival"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:textColor="#33B5E5"
-    android:textSize="12sp"
-    android:text="7:15" />
-
-				<TextView
-                android:id="@+id/estDistance"
+            <!--  RPM TEXT AND GAUGE-->
+            <LinearLayout
+                android:id="@+id/rpmtextandgaugelayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="#33B5E5"
-                android:textSize="12sp"
-                    android:text="10 miles" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
-			</LinearLayout>
-		</LinearLayout>
+                <!--  RPM TEXT AND LABEL -->
+                <LinearLayout
+                    android:id="@+id/rpmtextlabellayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-	</LinearLayout>
+                    <!--  RPM TEXT -->
+                    <TextView
+                        android:id="@+id/rpmText"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight=".65"
+                        android:gravity="right|center_vertical"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:lineSpacingMultiplier="1"
+                        android:maxLines="1"
+                        android:paddingBottom="0dp"
+                        android:paddingTop="0dp"
+                        android:textColor="#33B5E5"
+                        android:textSize="12sp"
+                        android:typeface="monospace" />
 
-    <LinearLayout
-android:id="@+id/mediaotherlayout"
-android:layout_width="match_parent"
-android:layout_height="0dp"
-android:gravity="bottom|left"
-android:orientation="horizontal"
-android:layout_gravity="bottom"
-    android:layout_weight=".3">
+                    <!--  RPM LABEL -->
+                    <TextView
+                        android:id="@+id/rpmTextLabel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight=".35"
+                        android:gravity="left|center_vertical"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:lineSpacingMultiplier="1"
+                        android:maxLines="1"
+                        android:paddingBottom="0dp"
+                        android:paddingTop="0dp"
+                        android:text="RPM"
+                        android:textColor="#33B5E5"
+                        android:textSize="12dp"
+                        android:typeface="monospace" />
+                </LinearLayout>
 
-<!-- MEDIA INFO -->
-<TableLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:gravity="top">
+                <!-- RPM GAUGE -->
+                <LinearLayout
+                    android:id="@+id/rpmgaugelayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-<!-- ARTIST -->
-<TableRow
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-<ImageView
-android:id="@+id/artistTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/artist"
-android:src="@drawable/artist" />
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="center">
-<TextView
-android:id="@+id/artistText"
-android:layout_width="10000dp"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp"/>
-</LinearLayout>
-</TableRow>
+                    <!-- RPM GAUGE -->
+                    <com.carhud.app.views.GaugeLinearLayout
+                        android:id="@+id/gauge"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#000000" />
+                </LinearLayout>
+            </LinearLayout>
 
-<!-- ALBUM -->
-<TableRow
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-<ImageView
-android:id="@+id/albumTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/album"
-android:src="@drawable/album" />
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="center">
-<TextView
-android:id="@+id/albumText"
-android:layout_width="10000dp"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp"/>
-</LinearLayout>
-</TableRow>
+        </LinearLayout>
 
-<!-- TRACK -->
-<TableRow
-android:layout_width="match_parent"
-android:layout_height="wrap_content">
-<ImageView
-android:id="@+id/trackTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/track"
-android:src="@drawable/track" />
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="center">
-<TextView
-android:id="@+id/trackText"
-android:layout_width="10000dp"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp"/>
-</LinearLayout>
-</TableRow>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".6"
+            android:gravity="center"
+            android:orientation="vertical">
 
-<!-- ALTITUDE -->
-<TableRow
-android:id="@+id/altitudelayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:visibility="gone">
-<ImageView
-android:id="@+id/altitudeTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/altitudeTitle"
-android:src="@drawable/altitude" />
-<TextView
-android:id="@+id/altitudeText"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp" />
-</TableRow>
+            <LinearLayout
+                android:id="@+id/navigationlayout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".8"
+                android:orientation="vertical">
 
-<!-- TEMP -->
-<TableRow
-android:id="@+id/localtemplayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:visibility="gone">
-<ImageView
-android:id="@+id/localtempTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/localtempTitle"
-android:src="@drawable/temp" />
-<TextView
-android:id="@+id/localtempText"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp" />
-</TableRow>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight=".8">
 
-<!-- TIME -->
-<TableRow
-android:id="@+id/timelayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:visibility="gone">
-<ImageView
-android:id="@+id/timeTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/timeTitle"
-android:src="@drawable/time" />
-<TextView
-android:id="@+id/timeText"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="12sp" />
-</TableRow>
+                    <TextView
+                        android:id="@+id/navigationText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".2"
+                        android:gravity="center"
+                        android:text="NAvigate Here"
+                        android:textColor="#33B5E5"
+                        android:textSize="30sp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@+id/navigationIcon" />
 
-<!-- BATTERY -->
-<TableRow
-android:id="@+id/batterylayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:visibility="gone">
-<ImageView
-android:id="@+id/batteryTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/batteryTitle"
-android:src="@drawable/bat" />
-<TextView
-android:id="@+id/batteryText"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="25sp" />
-</TableRow>
+                    <TextView
+                        android:id="@+id/estArrival"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="7:15"
+                        android:textColor="#33B5E5"
+                        android:textSize="25sp"
+                        android:layout_below="@+id/speedText"
+                        android:layout_centerHorizontal="false"
+                        android:layout_toRightOf="@+id/estDistance"
+                        android:layout_centerInParent="true" />
 
-<!-- COOLANT -->
-<TableRow
-android:id="@+id/coolantlayout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:visibility="gone">
-<ImageView
-android:id="@+id/coolantTitle"
-android:scaleType="fitCenter"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="right|center_vertical"
-android:contentDescription="@string/coolantTitle"
-android:src="@drawable/temp" />
-<TextView
-android:id="@+id/coolantText"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="left|center_vertical"
-android:textColor="#33B5E5"
-android:singleLine="true"
-android:ellipsize="none"
-android:marqueeRepeatLimit="-1"
-android:textSize="25sp" />
-</TableRow>
-</TableLayout>
-</LinearLayout>
+                    <TextView
+                        android:id="@+id/estDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="10 miles"
+                        android:textColor="#33B5E5"
+                        android:textSize="25sp"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:paddingRight="20sp"
+                        android:layout_alignBaseline="@+id/estArrival"
+                        android:layout_alignBottom="@+id/estArrival"
+                        android:layout_centerHorizontal="true" />
 
-</LinearLayout>
+                    <TextView
+                        android:id="@+id/speedText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".2"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:lineSpacingExtra="0dp"
+                        android:lineSpacingMultiplier="1"
+                        android:maxLines="1"
+                        android:paddingBottom="0dp"
+                        android:paddingTop="0dp"
+                        android:textColor="#33B5E5"
+                        android:textSize="90sp"
+                        android:typeface="monospace"
+                        android:text="66"
+                        android:layout_below="@+id/navigationText" />
 
-<!-- MEDIA AND OTHER INFO -->
+                    <ImageView
+                        android:id="@+id/navigationIcon"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/navigationIcon"
+                        android:gravity="center"
+                        android:src="@drawable/roundabout_5"
+                        android:visibility="visible"
+                        android:minWidth="70sp"
+                        android:layout_width="wrap_content"
+                        android:scaleType="centerInside"
+                        android:layout_alignBottom="@+id/estArrival"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
-<!--  NAVIGATION DISPLAY -->
+                    <LinearLayout
+                        android:id="@+id/mediaotherlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="bottom"
+                        android:layout_weight=".3"
+                        android:gravity="bottom|left"
+                        android:orientation="horizontal"
+                        android:layout_below="@+id/estDistance">
 
-</LinearLayout>
+                        <!-- MEDIA INFO -->
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="top">
+
+                            <!-- ARTIST -->
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/artistTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/artist"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/artist" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center">
+
+                                    <TextView
+                                        android:id="@+id/artistText"
+                                        android:layout_width="10000dp"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="30sp" />
+                                </LinearLayout>
+                            </TableRow>
+
+                            <!-- ALBUM -->
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/albumTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/album"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/album" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center">
+
+                                    <TextView
+                                        android:id="@+id/albumText"
+                                        android:layout_width="10000dp"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="30sp" />
+                                </LinearLayout>
+                            </TableRow>
+
+                            <!-- TRACK -->
+                            <TableRow
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/trackTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/track"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/track" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center">
+
+                                    <TextView
+                                        android:id="@+id/trackText"
+                                        android:layout_width="10000dp"
+                                        android:layout_height="match_parent"
+                                        android:ellipsize="none"
+                                        android:gravity="left|center_vertical"
+                                        android:marqueeRepeatLimit="-1"
+                                        android:singleLine="true"
+                                        android:textColor="#33B5E5"
+                                        android:textSize="30sp" />
+                                </LinearLayout>
+                            </TableRow>
+
+                            <!-- ALTITUDE -->
+                            <TableRow
+                                android:id="@+id/altitudelayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/altitudeTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/altitudeTitle"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/altitude" />
+
+                                <TextView
+                                    android:id="@+id/altitudeText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="none"
+                                    android:gravity="left|center_vertical"
+                                    android:marqueeRepeatLimit="-1"
+                                    android:singleLine="true"
+                                    android:textColor="#33B5E5"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <!-- TEMP -->
+                            <TableRow
+                                android:id="@+id/localtemplayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/localtempTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/localtempTitle"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/temp" />
+
+                                <TextView
+                                    android:id="@+id/localtempText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="none"
+                                    android:gravity="left|center_vertical"
+                                    android:marqueeRepeatLimit="-1"
+                                    android:singleLine="true"
+                                    android:textColor="#33B5E5"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <!-- TIME -->
+                            <TableRow
+                                android:id="@+id/timelayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/timeTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/timeTitle"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/time" />
+
+                                <TextView
+                                    android:id="@+id/timeText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="none"
+                                    android:gravity="left|center_vertical"
+                                    android:marqueeRepeatLimit="-1"
+                                    android:singleLine="true"
+                                    android:textColor="#33B5E5"
+                                    android:textSize="12sp" />
+                            </TableRow>
+
+                            <!-- BATTERY -->
+                            <TableRow
+                                android:id="@+id/batterylayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/batteryTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/batteryTitle"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/bat" />
+
+                                <TextView
+                                    android:id="@+id/batteryText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="none"
+                                    android:gravity="left|center_vertical"
+                                    android:marqueeRepeatLimit="-1"
+                                    android:singleLine="true"
+                                    android:textColor="#33B5E5"
+                                    android:textSize="25sp" />
+                            </TableRow>
+
+                            <!-- COOLANT -->
+                            <TableRow
+                                android:id="@+id/coolantlayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/coolantTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="@string/coolantTitle"
+                                    android:gravity="right|center_vertical"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/temp" />
+
+                                <TextView
+                                    android:id="@+id/coolantText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:ellipsize="none"
+                                    android:gravity="left|center_vertical"
+                                    android:marqueeRepeatLimit="-1"
+                                    android:singleLine="true"
+                                    android:textColor="#33B5E5"
+                                    android:textSize="25sp" />
+                            </TableRow>
+                        </TableLayout>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- MEDIA AND OTHER INFO -->
+
+        <!--  NAVIGATION DISPLAY -->
+
+    </LinearLayout>
 
     <!-- BOTTOM BAR -->
-	<LinearLayout
-		android:id="@+id/statusBar"
-		android:orientation="horizontal"
-		android:layout_width="match_parent"
-		android:layout_height="30dp"
-		android:background="#101010"
-		android:gravity="center">
+    <LinearLayout
+        android:id="@+id/statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#101010"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
-		<!-- SENDER CONNECTION -->
-		<TextView
-			android:id="@+id/senderConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:textColor="#33B5E5"
-			android:gravity="center"
-			android:text="@string/senderConnectionTitle"
-			android:paddingRight="5sp"
-			android:visibility="gone"
-			android:textSize="15sp" />
-		<ImageView
-			android:id="@+id/senderConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:visibility="gone"
-			android:contentDescription="@string/senderConnectionTitle"
-			android:src="@drawable/notconnected" />
+        <!-- SENDER CONNECTION -->
+        <TextView
+            android:id="@+id/senderConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/senderConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
 
-		<!-- COBRA CONNECTION -->
-		<TextView
-			android:id="@+id/cobraConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:textColor="#33B5E5"
-			android:gravity="center"
-			android:text="@string/cobraConnectionTitle"
-			android:paddingRight="5sp"
-			android:visibility="gone"
-			android:textSize="15sp" />
-		<ImageView
-			android:id="@+id/cobraConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:visibility="gone"
-			android:contentDescription="@string/cobraConnectionTitle"
-			android:src="@drawable/notconnected" />
+        <ImageView
+            android:id="@+id/senderConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/senderConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
 
-		<!-- OBD CONNECTION -->
-		<TextView
-			android:id="@+id/obdConnectionTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:textColor="#33B5E5"
-			android:gravity="center"
-			android:text="@string/obdConnectionTitle"
-			android:paddingRight="5sp"
-			android:visibility="gone"
-			android:textSize="15sp" />
-		<ImageView
-			android:id="@+id/obdConnection"
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:gravity="center"
-			android:paddingRight="20sp"
-			android:visibility="gone"
-			android:contentDescription="@string/obdConnectionTitle"
-			android:src="@drawable/notconnected" />
-	</LinearLayout>
+        <!-- COBRA CONNECTION -->
+        <TextView
+            android:id="@+id/cobraConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/cobraConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/cobraConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/cobraConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
+
+        <!-- OBD CONNECTION -->
+        <TextView
+            android:id="@+id/obdConnectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingRight="5sp"
+            android:text="@string/obdConnectionTitle"
+            android:textColor="#33B5E5"
+            android:textSize="15sp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/obdConnection"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/obdConnectionTitle"
+            android:gravity="center"
+            android:paddingRight="20sp"
+            android:src="@drawable/notconnected"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

@@ -10,6 +10,9 @@ What works:
 * Speedometer should work fine whether from the device's GPS or an OBDII but I only have the ability to use GPS.
 * Music and artist still sends from the original source
 
+Notes:
+* It can be finnicky. I have tested sender receiver on a Nexus 5X and an HTC Inspire 4G and the Inspire worked more reliably. 
+
 Feel free to modify and change it to your wishes, whether that means bringing back some parts of the original HUD such as messages or
 adjusting the UI For your uses. 
 
